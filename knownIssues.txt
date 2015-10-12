@@ -1,0 +1,12 @@
+
+Signals:
+
+Fifos:
+
+Pipes:
+
+Locks:
+    -Tener cuidado al crear un lockFile  porque segun como esta en la clase LockFile, la creacion del lock abre el archivo que esta lockeando.La destruccion lo cierra, por lo que si no se destruye el lock, quedara el archivo abierto.
+
+Semaforos:
+
