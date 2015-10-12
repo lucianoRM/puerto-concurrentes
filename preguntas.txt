@@ -1,0 +1,4 @@
+Preguntas:
+	Que significa que entran de a uno los barcos al puerto?
+	Que es mejor para compartir los datos de la carga? Pipe o memoria compartida?
+	Que significa que los barcos deben entrar de a uno al puerto?
