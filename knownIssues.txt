@@ -9,4 +9,5 @@ Locks:
     -Tener cuidado al crear un lockFile  porque segun como esta en la clase LockFile, la creacion del lock abre el archivo que esta lockeando.La destruccion lo cierra, por lo que si no se destruye el lock, quedara el archivo abierto.
 
 Semaforos:
+    -En la entrada de los barcos, como cada barco va a ser un proceso con un controlador que tiene un semaforo, cuando ese proceso termine y como los controladores son del tipo: SEM_UNDO, el valor del controlador se va a modificar para revertir los cambios hechos por el barco. En conclusion, no importa si hay solo 5 espacios para barcos e infinitos barcos, a medidas que los barcos amarren y terminen su proceso, otros barcos van a poder entrar.(TESTED).
 
