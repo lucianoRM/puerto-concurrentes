@@ -3,17 +3,15 @@
 //
 
 #include "Barco.h"
-#include <unistd.h>
 
-Barco::Barco(){
+Barco::Barco(Controlador* controlador){
 
-    this->controlador = new Controlador();
+    this->controlador =controlador;
     carga = 100;
 
 }
 
 Barco::~Barco(){
-    delete controlador;
 }
 
 void Barco::amarrar(){
@@ -22,25 +20,10 @@ void Barco::amarrar(){
     std::cout << getpid() << " :tengo amarre, voy a entrar" << std::endl;
     this->controlador->dejarPasarBarco();
     std::cout << getpid() << " :Estoy entrando" << std::endl;
-    sleep(1);
-    std::cout << getpid() << " :Entre" << std::endl;
+    sleep(3);
     this->controlador->liberarEntrada();
     std::cout << getpid() << " :Amarre" << std::endl;
 
 }
 
 
-int main(){
-    std::cout << "Lo hace" << std::endl;
-    for(int i = 0;i < 1;i++) {
-        pid_t pid = fork();
-        if (pid == 0) {
-            Barco *barco = new Barco();
-            barco->amarrar();
-            delete barco;
-        }
-    }
-
-    std::cout << getpid() << ": Termine" <<std::endl;
-    return 0;
-}

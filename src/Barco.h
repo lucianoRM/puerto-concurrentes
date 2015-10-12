@@ -16,7 +16,7 @@ class Barco {
         int carga;
 
     public:
-        Barco();
+        Barco(Controlador* controlador);
         ~Barco();
         void amarrar();
 

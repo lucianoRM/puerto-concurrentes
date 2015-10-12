@@ -4,9 +4,9 @@
 
 #include "Controlador.h"
 
-Controlador::Controlador() {
+Controlador::Controlador(int cantidadAmarres) {
 
-    this->semaforoAmarres = new Semaforo("Semaforo.cpp",5);
+    this->semaforoAmarres = new Semaforo("Semaforo.cpp",cantidadAmarres);
     this->entrada = new LockFile("LockFile.cpp");
 
 

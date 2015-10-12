@@ -27,7 +27,7 @@ class Controlador {
         FifoEscritura* cargasABarcos;
 
     public:
-        Controlador();
+        Controlador(int cantidadAmarres);
         ~Controlador();
         void cederAmarre();
         void dejarPasarBarco();
