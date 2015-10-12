@@ -12,13 +12,12 @@
 class Barco {
 
     private:
-        Controlador* controlador;
         int carga;
 
     public:
-        Barco(Controlador* controlador);
+        Barco();
         ~Barco();
-        void amarrar();
+        void amarrar(Controlador* controlador);
 
 
 

@@ -4,9 +4,8 @@
 
 #include "Barco.h"
 
-Barco::Barco(Controlador* controlador){
+Barco::Barco(){
 
-    this->controlador =controlador;
     carga = 100;
 
 }
@@ -14,15 +13,15 @@ Barco::Barco(Controlador* controlador){
 Barco::~Barco(){
 }
 
-void Barco::amarrar(){
+void Barco::amarrar(Controlador* controlador){
     std::cout << getpid() << " :Voy a pedir amarre" << std::endl;
-    this->controlador->cederAmarre();
+    controlador->cederAmarre();
     std::cout << getpid() << " :tengo amarre, voy a entrar" << std::endl;
-    this->controlador->dejarPasarBarco();
+    controlador->dejarPasarBarco();
     std::cout << getpid() << " :Estoy entrando" << std::endl;
-    sleep(3);
-    this->controlador->liberarEntrada();
+    controlador->liberarEntrada();
     std::cout << getpid() << " :Amarre" << std::endl;
+    sleep(5);
 
 }
 
