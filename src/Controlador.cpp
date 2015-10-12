@@ -6,30 +6,11 @@
 
 Controlador::Controlador(int cantidadAmarres) {
 
-
-    int fd;
     //Creamos los archivos que se van a usar para los controles de concurrencia
-    fd = open(semaforoAmarresFile,O_CREAT|O_WRONLY,0777);
-    close(fd);
-    fd = open(semaforoGruasFile,O_CREAT|O_WRONLY,0777);
-    close(fd);
-    fd = open(semaforoCamionesFile,O_CREAT|O_WRONLY,0777);
-    close(fd);
-    fd = open(lockEntradaFile,O_CREAT|O_WRONLY,0777);
-    close(fd);
-    fd = open(tareasGruasFile,O_CREAT|O_WRONLY,0777);
-    close(fd);
-    fd = open(cargasCamionesFile,O_CREAT|O_WRONLY,0777);
-    close(fd);
-    fd = open(cargasBarcosFile,O_CREAT|O_WRONLY,0777);
-    close(fd);
-
-
-
-
-
-
-
+    mknod(semaforoAmarresFile,S_IFREG|0777,0);
+    mknod(semaforoGruasFile,S_IFREG|0777,0);
+    mknod(semaforoCamionesFile,S_IFREG|0777,0);
+    mknod(lockEntradaFile,S_IFREG|0777,0);
 
 
 
@@ -44,15 +25,14 @@ Controlador::~Controlador() {
 
     delete this->semaforoAmarres;
     delete this->entrada;
+    this->tareasAGrua->eliminar();
+    this->tareasGruaPendientes->eliminar();
     delete this->tareasAGrua;
     delete this->tareasGruaPendientes;
-    remove(semaforoAmarresFile);
-    remove(semaforoCamionesFile);
-    remove(semaforoGruasFile);
-    remove(lockEntradaFile);
-    remove(tareasGruasFile);
-    remove(cargasBarcosFile);
-    remove(cargasCamionesFile);
+    unlink(semaforoAmarresFile);
+    unlink(semaforoCamionesFile);
+    unlink(semaforoGruasFile);
+    unlink(lockEntradaFile);
 
 
 }
@@ -80,7 +60,16 @@ void Controlador::liberarGrua(){
 
 }
 
-void Controlador::asignarGrua(){
+
+
+void Controlador::atenderBarcoAmarrado(struct trabajo trabajo){
+
+    //TODO: SI EL BARCO NO TIENE TRABAJO DE DESCARGA FIJARSE SI HAY ALGUN CAMION Y SINO DEJARLO IRSE
+    this->tareasAGrua->escribir(&trabajo,sizeof(trabajo));
+
+}
+
+void Controlador::asignarTrabajoAGrua(){
 
 
 

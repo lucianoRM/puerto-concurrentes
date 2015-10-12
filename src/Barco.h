@@ -8,15 +8,6 @@
 #include <iostream>
 #include "Controlador.h"
 
-enum {DESCARGAR = 0, CARGAR};
-
-struct trabajoBarco{
-
-    int carga;
-    short tipoTrabajo;
-    pid_t procesoBarco;
-
-};
 
 class Barco {
 
@@ -27,7 +18,7 @@ class Barco {
         Barco();
         ~Barco();
         void amarrar(Controlador* controlador);
-        struct trabajoBarco getTrabajo();
+        struct trabajo getTrabajo();
         void setCarga(int nuevaCarga);
         int getCarga();
 

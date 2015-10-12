@@ -21,26 +21,24 @@ void Barco::amarrar(Controlador* controlador){
     std::cout << getpid() << " :Estoy entrando" << std::endl;
     controlador->liberarEntrada();
     std::cout << getpid() << " :Amarre" << std::endl;
-    sleep(5);
+    //sleep(5);
 
 }
 
 
-struct trabajoBarco Barco::getTrabajo(){
+struct trabajo Barco::getTrabajo(){
 
     pid_t pid = getpid();
 
     short tipo;
-    if(this->carga > 0){
-        tipo = DESCARGAR;
-    }else{
-        tipo = CARGAR;
-    }
+    if(this->carga > 0)
+        tipo = DESCARGAR_BARCO;
 
-    struct trabajoBarco trabajoBarco;
+
+    struct trabajo trabajoBarco;
     trabajoBarco.carga = this->carga;
     trabajoBarco.tipoTrabajo = tipo;
-    trabajoBarco.procesoBarco = pid;
+    trabajoBarco.proceso = pid;
 
     return trabajoBarco;
 }
