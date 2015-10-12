@@ -1,0 +1,4 @@
+Comandos Utiles a la hora de debuggear:
+
+-ps : Lista todos los procesos activos
+-fuser <filepath> : Lista todos los procesos que tienen abierto ese archivo(Puede servir para checkear locks).
