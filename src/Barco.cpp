@@ -26,3 +26,35 @@ void Barco::amarrar(Controlador* controlador){
 }
 
 
+struct trabajoBarco Barco::getTrabajo(){
+
+    pid_t pid = getpid();
+
+    short tipo;
+    if(this->carga > 0){
+        tipo = DESCARGAR;
+    }else{
+        tipo = CARGAR;
+    }
+
+    struct trabajoBarco trabajoBarco;
+    trabajoBarco.carga = this->carga;
+    trabajoBarco.tipoTrabajo = tipo;
+    trabajoBarco.procesoBarco = pid;
+
+    return trabajoBarco;
+}
+
+
+void Barco::setCarga(int nuevaCarga){
+
+    this->carga = nuevaCarga;
+
+}
+int Barco::getCarga(){
+
+    return this->carga;
+
+}
+
+

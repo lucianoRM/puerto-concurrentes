@@ -10,6 +10,15 @@
 #include "FifoEscritura.h"
 #include "FifoLectura.h"
 #include "LockFile.h"
+#include <stdio.h>
+
+static const char* semaforoAmarresFile = "/tmp/semaforoAmarres.tmp";
+static const char* semaforoGruasFile = "/tmp/semaforoGruas.tmp";
+static const char* semaforoCamionesFile = "/tmp/semaforoCamiones.tmp";
+static const char* lockEntradaFile = "/tmp/lockEntrada.tmp";
+static const char* tareasGruasFile = "/tmp/tareasGruas.tmp";
+static const char* cargasCamionesFile = "/tmp/cargasCamiones.tmp";
+static const char* cargasBarcosFile = "/tmp/cargasBarcos.tmp";
 
 
 class Controlador {
