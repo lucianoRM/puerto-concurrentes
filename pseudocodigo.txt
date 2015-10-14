@@ -1,3 +1,33 @@
+process::grua {
+	while(deboSeguirTrabajando) {
+		obtenerLock(),
+		trabajo = leerTrabajoColaTrabajos();
+		liberarLock();
+		if (trabajo.tipo == "descargarCamion") {
+			writeColaCamionesVacios(trabajo.carga);	
+		} else if (trabajo.tipo == "descargarBarco") {
+			writeColaBarcosVacios(trabajo.carga);	
+		}
+	}
+}
+
+process::barco {
+	amarrar();	
+	encolarTrabajoEnColaTrabajos(trabajo);
+	carga = leerColaBarcosVacios()
+	desamarrar();
+}
+
+process::camion {
+	carga = leerColaCamionesVacios()
+	trabajo = simularEntrega(carga);//si vuelve o no con trabajo nuevo no sabemos	
+	if(trabajo) {	
+		encolarTrabajoEnColaTrabajos(trabajo);
+		carga = leerColaCamionesVacios()	
+	}
+}
+
+
 #ifndef CONTROLADOR_H_
 #define CONTROLADOR_H_
 
