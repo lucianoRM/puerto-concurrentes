@@ -1,6 +1,6 @@
 #include "Semaforo.h"
 
-Semaforo::Semaforo (const std::string& nombre, const int valorInicial):valorInicial(valorInicial) {
+Semaforo::Semaforo (const std::string& nombre, const int valorInicial):valorInicial(valorInicial), nombre(nombre) {
 
 	key_t clave = ftok(nombre.c_str(), 'a');
 
@@ -71,5 +71,10 @@ int Semaforo::v() const {
 }
 
 void Semaforo::eliminar() const {
-	semctl(this->id, 0, IPC_RMID);
+	int res = semctl(this->id, 0, IPC_RMID);
+	if (res == -1) {
+		std::string err = strerror(errno);
+		Logger::getInstance()->log("[Semaforo] [" + this->nombre + "] Error obteniendo el semaforo! " + err);
+		exit(1);
+	}
 }

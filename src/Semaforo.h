@@ -13,16 +13,16 @@ class Semaforo {
 private:
 	int id;
 	int valorInicial;
-
-	int inicializar () const;
+	std::string nombre;
+	int inicializar() const;
 
 public:
-	Semaforo ( const std::string& nombre,const int valorInicial );
+	Semaforo(const std::string& nombre, const int valorInicial);
 	~Semaforo();
 
-	int p () const; // decrementa
-	int v () const; // incrementa
-	void eliminar () const;
+	int p() const; // decrementa
+	int v() const; // incrementa
+	void eliminar() const;
 };
 
 #endif /* SEMAFORO_H_ */
