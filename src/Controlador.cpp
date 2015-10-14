@@ -8,10 +8,15 @@
 Controlador::Controlador(int cantidadAmarres) {
 
     //Creamos los archivos que se van a usar para los controles de concurrencia
-    mknod(semaforoAmarresFile,S_IFREG|0777,0);
-    mknod(semaforoGruasFile,S_IFREG|0777,0);
-    mknod(semaforoCamionesFile,S_IFREG|0777,0);
-    mknod(lockEntradaFile,S_IFREG|0777,0);
+    int result = 0;
+    result+=mknod(semaforoAmarresFile,S_IFREG|0777,0);
+    result+=mknod(semaforoGruasFile,S_IFREG|0777,0);
+    result+=mknod(semaforoCamionesFile,S_IFREG|0777,0);
+    result+=mknod(lockEntradaFile,S_IFREG|0777,0);
+    result+=mknod(cargasACamionesFile,S_IFREG|0777,0);
+    result+=mknod(cargasABarcosFile,S_IFREG|0777,0);
+
+    if(result < 0) Logger::getInstance()->log("[CONTROLADOR] Error al crear archivos para metodos de concurrencia");
 
     this->semaforoAmarres = new Semaforo(semaforoAmarresFile,cantidadAmarres);
     this->entrada = new LockFile(lockEntradaFile);
@@ -21,6 +26,7 @@ Controlador::Controlador(int cantidadAmarres) {
     this->cargasDeBarcos = new FifoLectura(cargasACamionesFile);
     this->cargasACamiones = new FifoEscritura(cargasACamionesFile);
     this->cargasDeCamiones = new FifoLectura(cargasABarcosFile);
+
 
 
 
@@ -102,7 +108,7 @@ void Controlador::agregarBarcoAFlota(){
     struct trabajo trabajo;
     this->cargasDeCamiones->leer(&trabajo,sizeof(trabajo));
     //TODO:realizar envio, logear la carga.
-    
+
 }
 
 

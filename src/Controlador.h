@@ -13,8 +13,11 @@
 #include "FifoEscritura.h"
 #include "FifoLectura.h"
 #include "LockFile.h"
+#include <stdio.h>
 #include "Logger.h"
 
+
+>>>>>>> 07580b15928ea9a54f72cf27034bfba18d9ef563
 
 static const char* const semaforoAmarresFile = "/tmp/semaforoAmarres.tmp";
 static const char* const semaforoGruasFile = "/tmp/semaforoGruas.tmp";
