@@ -15,12 +15,14 @@ class Barco: public Process {
     private:
         int carga;
 
+    private:
+        void amarrar(Controlador* controlador);
+
     public:
         Barco();
         ~Barco();
 
         void run(Controlador* controlador);
-        void amarrar(Controlador* controlador);
         struct trabajo getTrabajo();
         void setCarga(int nuevaCarga);
         int getCarga();
