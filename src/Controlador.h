@@ -17,8 +17,8 @@ static const char* const semaforoGruasFile = "/tmp/semaforoGruas.tmp";
 static const char* const semaforoCamionesFile = "/tmp/semaforoCamiones.tmp";
 static const char* const lockEntradaFile = "/tmp/lockEntrada.tmp";
 static const char* const tareasGruasFile = "/tmp/tareasGruas.tmp";
-static const char* const cargasCamionesFile = "/tmp/cargasCamiones.tmp";
-static const char* const cargasBarcosFile = "/tmp/cargasBarcos.tmp";
+static const char* const cargasACamionesFile = "/tmp/cargasACamiones.tmp";
+static const char* const cargasABarcosFile = "/tmp/cargasABarcos.tmp";
 
 enum {DESCARGAR_BARCO = 0, DESCARGAR_CAMION};
 
@@ -42,10 +42,10 @@ class Controlador {
         LockFile* entrada;
         FifoLectura* tareasGruaPendientes;
         FifoEscritura* tareasAGrua;
-        FifoLectura* camionesVacios;
         FifoEscritura* cargasACamiones;
-        FifoLectura* barcosVacios;
+        FifoLectura* cargasDeBarcos;
         FifoEscritura* cargasABarcos;
+        FifoLectura* cargasDeCamiones;
 
     public:
         Controlador(int cantidadAmarres);
@@ -55,12 +55,14 @@ class Controlador {
         void cederAmarre();
         void dejarPasarBarco();
         void liberarEntrada();
+        void atenderBarcoAmarrado(struct trabajo trabajo); //Toma trabajo de barco
+        void agregarBarcoAFlota(); //Agrega barco a la flota de barcos disponibles para envios
 
         //Camiones
+        void atenderCamionCargado(struct trabajo trabajo);
+        void agregarCamionAFlota(); //Agrega el camion a la flota de camiones disponibles para envios
 
         //Gruas
-
-        void atenderBarcoAmarrado(struct trabajo trabajo);
         void liberarGrua();
         void asignarTrabajoAGrua();
 
