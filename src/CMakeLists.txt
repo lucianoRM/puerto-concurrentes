@@ -37,7 +37,7 @@ endif()
 #Object files
 file(GLOB OSRCS "${CMAKE_CURRENT_LIST_DIR}/*.[cph]*")
 list(REMOVE_ITEM OSRCS ${CMAKE_CURRENT_LIST_DIR}/main.cpp)
-add_library(objectFiles OBJECT ${OSRCS})
+add_library(objectFiles OBJECT ${OSRCS} Process.cpp Process.h)
 
 
 #Exec

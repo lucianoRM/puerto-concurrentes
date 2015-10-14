@@ -2,6 +2,7 @@
 // Created by luciano on 10/10/15.
 //
 
+#include <iostream>
 #include "Controlador.h"
 
 Controlador::Controlador(int cantidadAmarres) {
@@ -38,7 +39,6 @@ Controlador::~Controlador() {
 }
 
 void Controlador::cederAmarre(){
-
     this->semaforoAmarres->p();
 }
 

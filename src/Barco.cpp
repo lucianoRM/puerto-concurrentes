@@ -14,7 +14,7 @@ Barco::~Barco(){
 }
 
 void Barco::amarrar(Controlador* controlador){
-    std::cout << getpid() << " :Voy a pedir amarre" << std::endl;
+    std::cout << getpid() << " :Voy a pedir amarre y me quedo esperando que me dejen entrar" << std::endl;
     controlador->cederAmarre();
     std::cout << getpid() << " :tengo amarre, voy a entrar" << std::endl;
     controlador->dejarPasarBarco();
@@ -56,3 +56,10 @@ int Barco::getCarga(){
 }
 
 
+void Barco::run(Controlador* controlador) {
+
+    this->amarrar(controlador);
+
+    sleep(10);
+
+}

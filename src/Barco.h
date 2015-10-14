@@ -7,9 +7,10 @@
 
 #include <iostream>
 #include "Controlador.h"
+#include "Process.h"
 
 
-class Barco {
+class Barco: public Process {
 
     private:
         int carga;
@@ -17,6 +18,8 @@ class Barco {
     public:
         Barco();
         ~Barco();
+
+        void run(Controlador* controlador);
         void amarrar(Controlador* controlador);
         struct trabajo getTrabajo();
         void setCarga(int nuevaCarga);

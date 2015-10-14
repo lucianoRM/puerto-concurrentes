@@ -10,26 +10,22 @@
 #include <stdlib.h>
 
 static int cantidadBarcos = 10;
-static int cantidadAmarres = 5;
-
+static int cantidadAmarres = 1;
 
 int main(){
 
     Controlador* controlador = new Controlador(cantidadAmarres);
     for(int i = 0;i < cantidadBarcos ;i++) {
-        pid_t pid = fork();
-        if (pid == 0) {
-            Barco *barco = new Barco();
-            barco->amarrar(controlador);
-            controlador->atenderBarcoAmarrado(barco->getTrabajo());
-            delete barco;
-            exit(0);
-        }
+        Barco barco;
+        barco.start(controlador);
     }
+
     for(int i = 0;i < cantidadBarcos; i++){
         wait(NULL);
     }
+
     delete controlador;
+
     std::cout << getpid() << ": Termine" <<std::endl;
     return 0;
 }
