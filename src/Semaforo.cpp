@@ -1,16 +1,36 @@
 #include "Semaforo.h"
 
-Semaforo :: Semaforo ( const std::string& nombre,const int valorInicial ):valorInicial(valorInicial) {
-	key_t clave = ftok ( nombre.c_str(),'a' );
-	this->id = semget ( clave,1,0666 | IPC_CREAT );
+Semaforo::Semaforo (const std::string& nombre, const int valorInicial):valorInicial(valorInicial) {
 
-	this->inicializar ();
+	key_t clave = ftok(nombre.c_str(), 'a');
+
+	if (clave == -1) {
+		std::string err = strerror(errno);
+		Logger::getInstance()->log("[Semaforo] [" + nombre + "] Error obteniendo el token! " + err);
+		exit(1);
+	}
+
+	this->id = semget(clave, 1, 0666 | IPC_CREAT);
+
+	if (this->id == -1) {
+		std::string err = strerror(errno);
+		Logger::getInstance()->log("[Semaforo] [" + nombre + "] Error obteniendo el semaforo! " + err);
+		exit(1);
+	}
+
+	int res = this->inicializar();
+
+	if (res == -1) {
+		std::string err = strerror(errno);
+		Logger::getInstance()->log("[Semaforo] [" + nombre + "] Error inicializando el semaforo! " + err);
+		exit(1);
+	}
 }
 
 Semaforo::~Semaforo() {
 }
 
-int Semaforo :: inicializar () const {
+int Semaforo::inicializar() const {
 
 	union semnum {
 		int val;
@@ -20,11 +40,13 @@ int Semaforo :: inicializar () const {
 
 	semnum init;
 	init.val = this->valorInicial;
-	int resultado = semctl ( this->id,0,SETVAL,init );
+
+	int resultado = semctl(this->id, 0, SETVAL, init);
+
 	return resultado;
 }
 
-int Semaforo :: p () const {
+int Semaforo::p() const {
 
 	struct sembuf operacion;
 
@@ -32,11 +54,11 @@ int Semaforo :: p () const {
 	operacion.sem_op  = -1;	// restar 1 al semaforo
 	operacion.sem_flg = SEM_UNDO;
 
-	int resultado = semop ( this->id,&operacion,1 );
+	int resultado = semop(this->id, &operacion, 1);
 	return resultado;
 }
 
-int Semaforo :: v () const {
+int Semaforo::v() const {
 
 	struct sembuf operacion;
 
@@ -44,10 +66,10 @@ int Semaforo :: v () const {
 	operacion.sem_op  = 1;	// sumar 1 al semaforo
 	operacion.sem_flg = SEM_UNDO;
 
-	int resultado = semop ( this->id,&operacion,1 );
+	int resultado = semop(this->id, &operacion, 1);
 	return resultado;
 }
 
-void Semaforo :: eliminar () const {
-	semctl ( this->id,0,IPC_RMID );
+void Semaforo::eliminar() const {
+	semctl(this->id, 0, IPC_RMID);
 }

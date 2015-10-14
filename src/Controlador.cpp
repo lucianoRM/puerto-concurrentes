@@ -2,7 +2,7 @@
 // Created by luciano on 10/10/15.
 //
 
-#include <iostream>
+
 #include "Controlador.h"
 
 Controlador::Controlador(int cantidadAmarres) {
@@ -64,13 +64,21 @@ Controlador::~Controlador() {
 
 
 void Controlador::cederAmarre(){
-    this->semaforoAmarres->p();
+    int res = this->semaforoAmarres->p();
+    if (res < 0) {
+        std::string err = strerror(errno);
+        Logger::getInstance()->log("Error cediendo amarre!" + err);
+    }
 }
 
 
 void Controlador::dejarPasarBarco(){
 
-    this->entrada->tomarLock();
+    int tomarLockRes = this->entrada->tomarLock();
+    if (tomarLockRes != 0) {
+        Logger::getInstance()->log("Error al tomar el lock de la entrada");
+        return;
+    }
 
 }
 

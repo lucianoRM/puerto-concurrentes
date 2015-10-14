@@ -6,6 +6,8 @@
 #include <sys/types.h>
 #include <string>
 
+#include "Logger.h"
+
 class Semaforo {
 
 private:
