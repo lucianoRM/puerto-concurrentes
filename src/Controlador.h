@@ -11,6 +11,7 @@
 #include "FifoLectura.h"
 #include "LockFile.h"
 #include <stdio.h>
+#include "Logger.h"
 
 static const char* const semaforoAmarresFile = "/tmp/semaforoAmarres.tmp";
 static const char* const semaforoGruasFile = "/tmp/semaforoGruas.tmp";
