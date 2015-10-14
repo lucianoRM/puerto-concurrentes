@@ -5,6 +5,9 @@
 #ifndef CONCU_TP1_CONTROLADOR_H
 #define CONCU_TP1_CONTROLADOR_H
 
+#include <stdio.h>
+#include <iostream>
+
 #include "Semaforo.h"
 #include "Fifo.h"
 #include "FifoEscritura.h"
@@ -12,6 +15,9 @@
 #include "LockFile.h"
 #include <stdio.h>
 #include "Logger.h"
+
+
+>>>>>>> 07580b15928ea9a54f72cf27034bfba18d9ef563
 
 static const char* const semaforoAmarresFile = "/tmp/semaforoAmarres.tmp";
 static const char* const semaforoGruasFile = "/tmp/semaforoGruas.tmp";

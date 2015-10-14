@@ -37,7 +37,7 @@ std::string Logger::getFormattedTime() {
     return std::string(buffer);
 }
 
-void Logger::log(const std::string message) {
+void Logger::log(std::string message) {
     int tomarLockRes = logFile.tomarLock();
 
     std::stringstream ss;
