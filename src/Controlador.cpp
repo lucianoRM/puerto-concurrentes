@@ -24,6 +24,7 @@ Controlador::Controlador(int cantidadAmarres) {
 }
 Controlador::~Controlador() {
 
+    this->semaforoAmarres->eliminar();
     delete this->semaforoAmarres;
     delete this->entrada;
     this->tareasAGrua->eliminar();

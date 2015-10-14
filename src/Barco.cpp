@@ -60,6 +60,6 @@ void Barco::run(Controlador* controlador) {
 
     this->amarrar(controlador);
 
-    sleep(10);
+    //sleep(10);
 
 }
