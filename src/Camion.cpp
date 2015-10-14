@@ -52,7 +52,7 @@ void Camion::run(Controlador* controlador) {
 
 
 void Camion::enlistarseParaEnvio(Controlador* controlador){
-    
+
 
 }
 
