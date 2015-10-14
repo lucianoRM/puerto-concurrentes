@@ -50,9 +50,16 @@ class Controlador {
     public:
         Controlador(int cantidadAmarres);
         ~Controlador();
+
+        //Barcos
         void cederAmarre();
         void dejarPasarBarco();
         void liberarEntrada();
+
+        //Camiones
+
+        //Gruas
+
         void atenderBarcoAmarrado(struct trabajo trabajo);
         void liberarGrua();
         void asignarTrabajoAGrua();
