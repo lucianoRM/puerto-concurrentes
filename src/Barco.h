@@ -6,8 +6,10 @@
 #define CONCU_TP1_BARCO_H
 
 #include <iostream>
+
 #include "Controlador.h"
 #include "Process.h"
+#include "Logger.h"
 
 
 class Barco: public Process {

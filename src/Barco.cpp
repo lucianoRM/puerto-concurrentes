@@ -14,15 +14,13 @@ Barco::~Barco(){
 }
 
 void Barco::amarrar(Controlador* controlador){
-    std::cout << getpid() << " :Voy a pedir amarre y me quedo esperando que me dejen entrar" << std::endl;
+    Logger::getInstance()->log("[BARCO] Voy a pedir amarre y me quedo esperando que me dejen entrar");
     controlador->cederAmarre();
-    std::cout << getpid() << " :tengo amarre, voy a entrar" << std::endl;
+    Logger::getInstance()->log("[BARCO] Tengo amarre, voy a entrar");
     controlador->dejarPasarBarco();
-    std::cout << getpid() << " :Estoy entrando" << std::endl;
+    Logger::getInstance()->log("[BARCO] Estoy entrando");
     controlador->liberarEntrada();
-    std::cout << getpid() << " :Amarre" << std::endl;
-    //sleep(5);
-
+    Logger::getInstance()->log("[BARCO] Amarre");
 }
 
 

@@ -24,6 +24,7 @@ private:
     LockFile logFile;
     Logger();
     ~Logger();
+    std::string getFormattedTime();
 };
 
 #endif //CONCU_LOGGER_H

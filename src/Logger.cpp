@@ -5,7 +5,7 @@
 #include "Logger.h"
 
 Logger* Logger::instance = NULL;
-const std::string Logger::fileName = "./simulacion.log";
+const std::string Logger::fileName = "/tmp/simulacion.log";
 
 Logger::Logger() :
     logFile((char*) fileName.c_str()) {
@@ -24,24 +24,37 @@ void Logger::destroy() {
     }
 }
 
+std::string Logger::getFormattedTime() {
+    std::time_t rawtime;
+    std::tm* timeinfo;
+    char buffer [80];
+
+    std::time(&rawtime);
+    timeinfo = std::localtime(&rawtime);
+
+    std::strftime(buffer,80,"%Y%m%d %H:%M:%S",timeinfo);
+
+    return std::string(buffer);
+}
+
 void Logger::log(const std::string message) {
     int tomarLockRes = logFile.tomarLock();
 
-    if (tomarLockRes != 0) {
-        std::cerr << " [" << getpid() << "] Error al tomar el lock del log: " << fileName << ". Mensaje que iba a escribir: " << message << std::endl;
-        return;
-    }
-
     std::stringstream ss;
 
-    ss << "[" << getpid() << "] " << message << std::endl;
+    ss << "[" << getFormattedTime() << "] [" << getpid() << "] " << message << std::endl;
 
     std::string const log_msg = ss.str();
+
+    if (tomarLockRes != 0) {
+        std::cerr << "Error al tomar el lock del log: " << fileName << ". Mensaje que iba a escribir: " << log_msg << std::endl;
+        return;
+    }
 
     int res = logFile.escribir(log_msg.c_str(), log_msg.length());
 
     if (res < 0) {
-        std::cerr << " [" << getpid() << "] Ha ocurrido un error al escibir el mensaje: "<< ss.str() << std::endl;
+        std::cerr << "Ha ocurrido un error al escibir el mensaje: "<< log_msg << std::endl;
     }
 
     std::cout << ss.str() << std::endl;
@@ -49,7 +62,7 @@ void Logger::log(const std::string message) {
     int liberarLockRes = logFile.liberarLock();
 
     if (liberarLockRes!= 0) {
-        std::cerr << " [" << getpid() << "] Error al liberar el lock del log: " << fileName << ". Mensaje que escribi: " << message << std::endl;
+        std::cerr << "Error al liberar el lock del log: " << fileName << ". Mensaje que escribi: " << log_msg << std::endl;
         return;
     }
 }
