@@ -10,7 +10,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 
-static int cantidadBarcos = 5;
+static int cantidadBarcos = 10;
 static int cantidadAmarres = 1;
 
 int main(){
@@ -26,6 +26,7 @@ int main(){
         wait(NULL);
     }
 
+    controlador->destruir();
     delete controlador;
 
     Logger::getInstance()->log("Soy el master y termine");

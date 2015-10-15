@@ -43,8 +43,8 @@ class Controlador {
 
     private:
         Semaforo* semaforoAmarres;
-        Semaforo* semaforoGruas;
-        Semaforo* semaforoCamiones;
+        //Semaforo* semaforoGruas;
+        //Semaforo* semaforoCamiones;
         LockFile* entrada;
         FifoLectura* tareasGruaPendientes;
         FifoEscritura* tareasAGrua;
@@ -56,6 +56,7 @@ class Controlador {
     public:
         Controlador(int cantidadAmarres);
         ~Controlador();
+        void destruir(); //destruye todos los elementos de control de concurrencia que tiene.
 
         //Barcos
         void cederAmarre();

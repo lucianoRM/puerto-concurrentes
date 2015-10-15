@@ -12,7 +12,6 @@ pid_t Process::start(Controlador* controlador) {
     pid_t pid = fork();
 
     if (pid == 0) {
-
         pid = getpid();
 
         this->run(controlador);
@@ -21,7 +20,6 @@ pid_t Process::start(Controlador* controlador) {
 
         exit ( 0 );
     }
-
     return pid;
 }
 

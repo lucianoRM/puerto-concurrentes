@@ -33,28 +33,32 @@ Controlador::Controlador(int cantidadAmarres) {
 }
 Controlador::~Controlador() {
 
-    this->semaforoAmarres->eliminar();
     delete this->semaforoAmarres;
     delete this->entrada;
-    this->tareasAGrua->eliminar();
-    this->tareasGruaPendientes->eliminar();
-    this->cargasABarcos->eliminar();
-    this->cargasACamiones->eliminar();
-    this->cargasDeBarcos->eliminar();
-    this->cargasDeCamiones->eliminar();
     delete this->cargasABarcos;
     delete this->cargasDeCamiones;
     delete this->cargasDeBarcos;
     delete this->cargasACamiones;
     delete this->tareasAGrua;
     delete this->tareasGruaPendientes;
+
+
+}
+void Controlador::destruir(){
+
+    this->semaforoAmarres->eliminar();
+    this->tareasAGrua->eliminar();
+    this->tareasGruaPendientes->eliminar();
+    this->cargasABarcos->eliminar();
+    this->cargasACamiones->eliminar();
+    this->cargasDeBarcos->eliminar();
+    this->cargasDeCamiones->eliminar();
     unlink(semaforoAmarresFile);
     unlink(semaforoCamionesFile);
     unlink(semaforoGruasFile);
     unlink(lockEntradaFile);
     unlink(cargasABarcosFile);
     unlink(cargasACamionesFile);
-
 
 }
 
@@ -136,7 +140,7 @@ void Controlador::asignarTrabajoAGrua(){
 
 void Controlador::liberarGrua(){
 
-    this->semaforoGruas->v();
+    //this->semaforoGruas->v();
 
 }
 
