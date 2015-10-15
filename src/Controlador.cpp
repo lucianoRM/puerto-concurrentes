@@ -145,9 +145,16 @@ void Controlador::liberarEntrada(){
 
 void Controlador::atenderBarcoAmarrado(struct trabajo trabajo){
 
-    //TODO: SI EL BARCO NO TIENE TRABAJO DE DESCARGA FIJARSE SI HAY ALGUN CAMION Y SINO DEJARLO IRSE
+    //Primero tiene que checkear que haya una grua disponible
+    this->semaforoGruasLibres->p(); //Las gruas haran el v();
+
+    //Si hay gruas disponibles, debe escribir su trabajo a la cola de trabajos a gruas
     this->tareasAGrua->escribir(&trabajo,sizeof(trabajo));
-    //no deberia ser capaz de continuar si no hay una grua libre y un camion vacio
+
+    //no deberia ser capaz de continuar si no hay un camion vacio
+    this->semaforoCamionesLibres->p(); //Un camion libre hara el v().
+
+    //Si llega a este punto es porque hay una grua asignada y un camion vacio
 
 
 }
@@ -156,6 +163,12 @@ void Controlador::atenderBarcoAmarrado(struct trabajo trabajo){
 struct trabajo Controlador::agregarBarcoAFlota(){
 
     struct trabajo trabajo;
+    //Primero hay que avisarle a los camiones que hay un barco libre
+    this->semaforoBarcosLibres->v();
+
+    //TODO:TOMAR LOCK PARA LEER LA CARGA
+
+    //Una vez avisado, se va a bloquear para leer la carga del camion
     this->cargasDeCamiones->leer(&trabajo,sizeof(trabajo));
 
     return trabajo;
@@ -174,23 +187,34 @@ struct trabajo Controlador::agregarBarcoAFlota(){
 
 
 
-void Controlador::asignarTrabajoAGrua(){
+struct trabajo Controlador::asignarTrabajoAGrua(){
 
     //TODO:Pedir lock de lectura de trabajos
+
+    //Avisar que hay una grua libre para trabajar
+    this->semaforoGruasLibres->v();
+
     struct trabajo trabajo;
     this->tareasGruaPendientes->leer(&trabajo,sizeof(trabajo));
 
-    //TODO:LEER EL TRABAJO Y ESCRIBIR EN EL FIFO CORRESPONDIENTE
+    return trabajo;
 
 
 }
 
+void Controlador::descargarGrua(struct trabajo trabajo){
 
-void Controlador::liberarGrua(){
-
-    //this->semaforoGruas->v();
+    //Leer el trabajo y cargarlo en el fifo correspondiente
+    if(trabajo.tipoTrabajo == DESCARGAR_CAMION){
+        this->cargasABarcos->escribir(&trabajo,sizeof(trabajo));
+    }else{
+        this->cargasACamiones->escribir(&trabajo,sizeof(trabajo));
+    }
 
 }
+
+
+
 
 /*##################################################################################################
  * #################################################################################################
@@ -208,15 +232,32 @@ void Controlador::liberarGrua(){
 
 void Controlador::atenderCamionCargado(struct trabajo trabajo){
 
+    //Primero tiene que checkear que haya una grua disponible
+    this->semaforoGruasLibres->p(); //Las gruas haran el v();
+
+    //Si hay gruas disponibles, debe escribir su trabajo a la cola de trabajos a gruas
     this->tareasAGrua->escribir(&trabajo,sizeof(trabajo));
-    //no deberia ser capaz de continuar si no hay una grua libre y un barco vacio
+
+    //no deberia ser capaz de continuar si no hay un barco vacio
+    this->semaforoBarcosLibres->p(); //Un barco libre hara el v().
+
+    //Si llega a este punto es porque hay una grua asignada y un barco vacio
+
+
 
 }
 struct trabajo Controlador::agregarCamionAFlota(){
 
     struct trabajo trabajo;
+    //Primero hay que avisarle a los barcos que hay un camion libre
+    this->semaforoCamionesLibres->v();
+
+    //TODO:TOMAR LOCK PARA LEER LA CARGA
+
+    //Una vez avisado, se va a bloquear para leer la carga del barco
     this->cargasDeBarcos->leer(&trabajo,sizeof(trabajo));
 
     return trabajo;
+
 
 }

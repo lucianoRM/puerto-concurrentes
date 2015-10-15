@@ -33,6 +33,6 @@ int main(){
     Logger::getInstance()->log("Soy el master y termine");
     Logger::destroy();
 
-    cout << C::barcos;
+    std::cout << C::barcos;
     return 0;
 }

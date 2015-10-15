@@ -79,8 +79,8 @@ class Controlador {
         struct trabajo agregarCamionAFlota(); //Agrega el camion a la flota de camiones disponibles para envios
 
         //Gruas
-        void liberarGrua();
-        void asignarTrabajoAGrua();
+        struct trabajo asignarTrabajoAGrua();
+        void descargarGrua(struct trabajo trabajo);
 
 
 };
