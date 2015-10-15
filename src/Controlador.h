@@ -16,11 +16,16 @@
 #include <stdio.h>
 #include "Logger.h"
 #include <errno.h>
+#include <string>
 
 
 static const char* const semaforoAmarresFile = "/tmp/semaforoAmarres.tmp";
-static const char* const semaforoGruasFile = "/tmp/semaforoGruas.tmp";
-static const char* const semaforoCamionesFile = "/tmp/semaforoCamiones.tmp";
+static const char* const semaforoGruasLibresFile = "/tmp/semaforoGruasLibres.tmp";
+static const char* const semaforoCamionesLibresFile = "/tmp/semaforoCamionesLibres.tmp";
+static const char* const semaforoBarcosLibresFile = "/tmp/semaforoBarcosLibres.tmp";
+static const char* const lockLecturaCargasABarcosFile = "/tmp/lockLecturaCargasABarcos.tmp";
+static const char* const lockLecturaCargasACamionesFile = "/tmp/lockLecturaCargasACamiones.tmp";
+static const char* const lockLecturaTrabajosAGruasFile = "/tmp/lockLecturaTrabajosAGruas.tmp";
 static const char* const lockEntradaFile = "/tmp/lockEntrada.tmp";
 static const char* const tareasGruasFile = "/tmp/tareasGruas.tmp";
 static const char* const cargasACamionesFile = "/tmp/cargasACamiones.tmp";
@@ -43,9 +48,13 @@ class Controlador {
 
     private:
         Semaforo* semaforoAmarres;
-        //Semaforo* semaforoGruas;
-        //Semaforo* semaforoCamiones;
+        Semaforo* semaforoGruasLibres;
+        Semaforo* semaforoCamionesLibres;
+        Semaforo* semaforoBarcosLibres;
         LockFile* entrada;
+        LockFile* lecturaCargasABarcos;
+        LockFile* lecturaCargasACamiones;
+        LockFile* lecturaTrabajosAGruas;
         FifoLectura* tareasGruaPendientes;
         FifoEscritura* tareasAGrua;
         FifoEscritura* cargasACamiones;
@@ -63,11 +72,11 @@ class Controlador {
         void dejarPasarBarco();
         void liberarEntrada();
         void atenderBarcoAmarrado(struct trabajo trabajo); //Toma trabajo de barco
-        void agregarBarcoAFlota(); //Agrega barco a la flota de barcos disponibles para envios
+        struct trabajo agregarBarcoAFlota(); //Agrega barco a la flota de barcos disponibles para envios
 
         //Camiones
         void atenderCamionCargado(struct trabajo trabajo);
-        void agregarCamionAFlota(); //Agrega el camion a la flota de camiones disponibles para envios
+        struct trabajo agregarCamionAFlota(); //Agrega el camion a la flota de camiones disponibles para envios
 
         //Gruas
         void liberarGrua();

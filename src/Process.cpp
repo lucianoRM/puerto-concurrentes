@@ -17,6 +17,7 @@ pid_t Process::start(Controlador* controlador) {
         this->run(controlador);
 
         delete controlador;
+        Logger::destroy();
 
         exit ( 0 );
     }

@@ -7,6 +7,7 @@
 
 #include "Process.h"
 
+
 class Camion : public Process {
 
     private:
@@ -15,7 +16,7 @@ class Camion : public Process {
     private:
         void enlistarseParaEnvio(Controlador* controlador); //Cuando el camion esta vacio
         void pedirDescarga(Controlador* controlador); //Cuando el camion esta lleno
-        void pedirTrabajo(Controlador* controlador); //Sirve tanto para la descarga como para la carga del camion
+
         void realizarEnvio(Controlador* controlador);
 
     public:

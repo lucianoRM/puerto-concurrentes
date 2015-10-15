@@ -72,7 +72,6 @@ int Semaforo::v() const {
 
 void Semaforo::eliminar() const {
 
-	std::cout << this->id << std::endl;
 	int res = semctl(this->id, 0, IPC_RMID);
 	if (res == -1) {
 		std::string err = strerror(errno);

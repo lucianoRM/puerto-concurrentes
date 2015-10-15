@@ -30,5 +30,6 @@ int main(){
     delete controlador;
 
     Logger::getInstance()->log("Soy el master y termine");
+    Logger::destroy();
     return 0;
 }
