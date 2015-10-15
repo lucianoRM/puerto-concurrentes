@@ -5,6 +5,7 @@
 #include "Barco.h"
 #include "Controlador.h"
 #include "Logger.h"
+#include "C.h"
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
@@ -31,5 +32,7 @@ int main(){
 
     Logger::getInstance()->log("Soy el master y termine");
     Logger::destroy();
+
+    cout << C::barcos;
     return 0;
 }
