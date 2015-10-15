@@ -10,6 +10,7 @@
 #include <iostream>
 #include <string>
 #include <sstream>
+#include <ctime>
 
 #include "LockFile.h"
 

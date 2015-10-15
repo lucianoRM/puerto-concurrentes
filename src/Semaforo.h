@@ -5,6 +5,7 @@
 #include <sys/sem.h>
 #include <sys/types.h>
 #include <string>
+#include <errno.h>
 
 #include "Logger.h"
 

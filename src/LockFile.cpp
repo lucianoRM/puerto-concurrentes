@@ -1,6 +1,7 @@
 #include <iostream>
 #include "LockFile.h"
 
+
 LockFile :: LockFile ( const std::string nombre ) {
 
 	this->nombre = nombre;
@@ -11,7 +12,6 @@ LockFile :: LockFile ( const std::string nombre ) {
 	this->fd = open(this->nombre.c_str(), O_CREAT|O_WRONLY, 0777);
 	if (this->fd < 0) {
 		std::cerr << getpid() <<": LockFile: Error al abrir el archivo a usar como LockFile [" << nombre << "]" << std::endl;
-		perror("Error al abrir el archivo a usar como LockFile");
 		exit(1);
 	}
 }

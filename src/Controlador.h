@@ -15,6 +15,7 @@
 #include "LockFile.h"
 #include <stdio.h>
 #include "Logger.h"
+#include <errno.h>
 
 
 static const char* const semaforoAmarresFile = "/tmp/semaforoAmarres.tmp";
