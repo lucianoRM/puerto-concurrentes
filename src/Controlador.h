@@ -27,9 +27,9 @@ static const char* const lockLecturaCargasABarcosFile = "/tmp/lockLecturaCargasA
 static const char* const lockLecturaCargasACamionesFile = "/tmp/lockLecturaCargasACamiones.tmp";
 static const char* const lockLecturaTrabajosAGruasFile = "/tmp/lockLecturaTrabajosAGruas.tmp";
 static const char* const lockEntradaFile = "/tmp/lockEntrada.tmp";
-static const char* const tareasGruasFile = "/tmp/tareasGruas.tmp";
-static const char* const cargasACamionesFile = "/tmp/cargasACamiones.tmp";
-static const char* const cargasABarcosFile = "/tmp/cargasABarcos.tmp";
+static const char* const tareasAGruaFile = "/tmp/tareasAGrua.tmp";
+static const char* const camionesVaciosFile = "/tmp/camionesVacios.tmp";
+static const char* const barcosVaciosFile = "/tmp/barcosVacioes.tmp";
 
 enum {DESCARGAR_BARCO = 0, DESCARGAR_CAMION};
 
@@ -55,12 +55,17 @@ class Controlador {
         LockFile* lecturaCargasABarcos;
         LockFile* lecturaCargasACamiones;
         LockFile* lecturaTrabajosAGruas;
-        FifoLectura* tareasGruaPendientes;
-        FifoEscritura* tareasAGrua;
-        FifoEscritura* cargasACamiones;
-        FifoLectura* cargasDeBarcos;
-        FifoEscritura* cargasABarcos;
-        FifoLectura* cargasDeCamiones;
+        FifoLectura* tareasAGruaLectura;
+        FifoEscritura* tareasAGruaEscritura;
+        FifoEscritura* barcosVaciosEscritura;
+        FifoLectura* barcosVaciosLectura;
+        FifoEscritura* camionesVaciosEscritura;
+        FifoLectura* camionesVaciosLectura;
+
+        //Canales a barcos y a camiones se van a abrir para cada proceso, pero es necesario que la clase controlador los tenga
+        FifoEscritura* cargaEscritura;
+        FifoLectura* cargaLectura;
+
 
     public:
         Controlador(int cantidadAmarres);
@@ -72,11 +77,17 @@ class Controlador {
         void dejarPasarBarco();
         void liberarEntrada();
         void atenderBarcoAmarrado(struct trabajo trabajo); //Toma trabajo de barco
-        struct trabajo agregarBarcoAFlota(); //Agrega barco a la flota de barcos disponibles para envios
+        void  agregarBarcoAFlota(int barcoPid); //Agrega barco a la flota de barcos disponibles para envios
+        struct trabajo darCargaABarco();
+
+
 
         //Camiones
         void atenderCamionCargado(struct trabajo trabajo);
-        struct trabajo agregarCamionAFlota(); //Agrega el camion a la flota de camiones disponibles para envios
+        void agregarCamionAFlota(int camionPid); //Agrega el camion a la flota de camiones disponibles para envios
+        struct trabajo darCargaACamion(); //Toma la carga para el camion y la devuelve.
+
+
 
         //Gruas
         struct trabajo asignarTrabajoAGrua();
