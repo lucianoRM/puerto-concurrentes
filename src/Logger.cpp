@@ -57,7 +57,7 @@ void Logger::log(std::string message) {
         std::cerr << "Ha ocurrido un error al escibir el mensaje: "<< log_msg << std::endl;
     }
 
-    std::cout << ss.str() << std::endl;
+    std::cout << "\033[1;31m" + ss.str() + "\033[0m" << std::endl;
 
     int liberarLockRes = logFile.liberarLock();
 

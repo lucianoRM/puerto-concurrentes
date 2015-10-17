@@ -29,9 +29,14 @@ static const char* const lockLecturaTrabajosAGruasFile = "/tmp/lockLecturaTrabaj
 static const char* const lockEntradaFile = "/tmp/lockEntrada.tmp";
 static const char* const tareasAGruaFile = "/tmp/tareasAGrua.tmp";
 static const char* const camionesVaciosFile = "/tmp/camionesVacios.tmp";
-static const char* const barcosVaciosFile = "/tmp/barcosVacioes.tmp";
+static const char* const barcosVaciosFile = "/tmp/barcosVacios.tmp";
+
+//NO CAMBIAR PORQUE SE NECESITA QUE SEAN ESTOS NUMEROS--------------------------------------
 
 enum {DESCARGAR_BARCO = 0, DESCARGAR_CAMION};
+enum {BARCO = 0,CAMION};
+
+//NO CAMBIAR PORQUE SE NECESITA QUE SEAN ESTOS NUMEROS--------------------------------------
 
 struct trabajo{
 
@@ -77,23 +82,23 @@ class Controlador {
         void dejarPasarBarco();
         void liberarEntrada();
         void atenderBarcoAmarrado(struct trabajo trabajo); //Toma trabajo de barco
-        void  agregarBarcoAFlota(int barcoPid); //Agrega barco a la flota de barcos disponibles para envios
+        void  agregarBarcoAFlota(pid_t barcoPid); //Agrega barco a la flota de barcos disponibles para envios
         struct trabajo darCargaABarco();
-
+        void adaptarseABarco(); //Abre los fifos y pipes correspondientes del modo necesario
 
 
         //Camiones
         void atenderCamionCargado(struct trabajo trabajo);
-        void agregarCamionAFlota(int camionPid); //Agrega el camion a la flota de camiones disponibles para envios
+        void agregarCamionAFlota(pid_t camionPid); //Agrega el camion a la flota de camiones disponibles para envios
         struct trabajo darCargaACamion(); //Toma la carga para el camion y la devuelve.
-
+        void adaptarseACamion(); //Abre los fifos y pipes correspondientes del modo necesario
 
 
         //Gruas
         struct trabajo asignarTrabajoAGrua();
-        void descargarGrua(struct trabajo trabajo);
-
-
+        void descargarGrua(struct trabajo trabajo,pid_t pidTransporte);
+        pid_t tomarTransporteVacio(int transporte);
+        void adaptarseAGrua(); //Abre los fifos y pipes correspondientes del modo necesario
 };
 
 

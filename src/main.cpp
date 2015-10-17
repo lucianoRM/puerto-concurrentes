@@ -16,7 +16,7 @@
 static int cantidadBarcos = 1;
 static int cantidadAmarres = 1;
 static int cantidadGruas = 1;
-static int cantidadCamiones = 0;
+static int cantidadCamiones = 1;
 static int cantidadProcesosHijos = cantidadBarcos + cantidadGruas + cantidadCamiones;
 
 int main(){
@@ -33,7 +33,12 @@ int main(){
         grua.start(controlador);
     }
 
-    for(int i = 0;i < cantidadBarcos; i++){
+    for(int i=0;i < cantidadCamiones; i++){
+        Camion camion;
+        camion.start(controlador);
+    }
+
+    for(int i = 0;i < cantidadProcesosHijos; i++){
         wait(NULL);
     }
 

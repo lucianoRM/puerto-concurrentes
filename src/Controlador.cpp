@@ -36,17 +36,11 @@ Controlador::Controlador(int cantidadAmarres) {
     this->entrada = new LockFile(lockEntradaFile);
 
     this->tareasAGruaEscritura = new FifoEscritura(tareasAGruaFile);
-    this->tareasAGruaEscritura->abrir();
     this->tareasAGruaLectura = new FifoLectura(tareasAGruaFile);
-    this->tareasAGruaLectura->abrir();
     this->barcosVaciosEscritura = new FifoEscritura(barcosVaciosFile);
-    this->barcosVaciosEscritura->abrir();
     this->barcosVaciosLectura = new FifoLectura(barcosVaciosFile);
-    this->barcosVaciosLectura->abrir();
     this->camionesVaciosEscritura = new FifoEscritura(camionesVaciosFile);
-    this->camionesVaciosEscritura->abrir();
     this->camionesVaciosLectura = new FifoLectura(camionesVaciosFile);
-    this->camionesVaciosLectura->abrir();
 
 
 
@@ -74,6 +68,8 @@ Controlador::~Controlador() {
     delete this->barcosVaciosEscritura;
     delete this->camionesVaciosEscritura;
     delete this->camionesVaciosLectura;
+    delete this->cargaLectura;
+    delete this->cargaEscritura;
 
 
 }
@@ -90,6 +86,7 @@ void Controlador::destruir(){
     this->barcosVaciosLectura->eliminar();
     this->camionesVaciosLectura->eliminar();
     this->camionesVaciosEscritura->eliminar();
+
 
     unlink(semaforoAmarresFile);
     unlink(semaforoGruasLibresFile);
@@ -145,14 +142,14 @@ void Controlador::liberarEntrada(){
 void Controlador::atenderBarcoAmarrado(struct trabajo trabajo){
 
     //Primero tiene que checkear que haya una grua disponible
-    this->semaforoGruasLibres->p(); //Las gruas haran el v();
+    //this->semaforoGruasLibres->p(); //Las gruas haran el v();
 
     //Si hay gruas disponibles, debe escribir su trabajo a la cola de trabajos a gruas
     this->tareasAGruaEscritura->escribir(&trabajo,sizeof(trabajo));
 
 
     //no deberia ser capaz de continuar si no hay un camion vacio
-    this->semaforoCamionesLibres->p(); //Un camion libre hara el v().
+    //this->semaforoCamionesLibres->p(); //Un camion libre hara el v().
 
     //Si llega a este punto es porque hay una grua asignada y un camion vacio
 
@@ -160,10 +157,10 @@ void Controlador::atenderBarcoAmarrado(struct trabajo trabajo){
 }
 
 
-void Controlador::agregarBarcoAFlota(int barcoPid){
+void Controlador::agregarBarcoAFlota(pid_t barcoPid){
 
     //Primero hay que avisarle a los camiones que hay un barco libre
-    this->semaforoBarcosLibres->v();
+    //this->semaforoBarcosLibres->v();
 
     //Primero hay que abrir un fifo para que pueda recibir la carga
     std::string path = "/tmp/" + std::to_string(barcoPid);
@@ -182,6 +179,14 @@ struct trabajo Controlador::darCargaABarco(){
 
 }
 
+void Controlador::adaptarseABarco(){
+
+    //TODO:CHECKEAR EL ORDEN
+    this->tareasAGruaEscritura->abrir();
+    this->barcosVaciosEscritura->abrir();
+
+
+}
 
 
 /*##################################################################################################
@@ -200,7 +205,7 @@ struct trabajo Controlador::asignarTrabajoAGrua(){
     //TODO:Pedir lock de lectura de trabajos
 
     //Avisar que hay una grua libre para trabajar
-    this->semaforoGruasLibres->v();
+    //this->semaforoGruasLibres->v();
 
     struct trabajo trabajo;
     this->tareasAGruaLectura->leer(&trabajo,sizeof(trabajo));
@@ -210,11 +215,51 @@ struct trabajo Controlador::asignarTrabajoAGrua(){
 
 }
 
-void Controlador::descargarGrua(struct trabajo trabajo){
+void Controlador::descargarGrua(struct trabajo trabajo, pid_t pidTransporte){
+
+    //Debo abrir un fifo para escribir la carga en el transporte
+    std::string path = "/tmp/" + std::to_string(pidTransporte);
+
+    //Creo el fifo
+    this->cargaEscritura = new FifoEscritura(path);
+
+    //Abro el fifo
+    this->cargaEscritura->abrir();
+
+    //Escribo la carga
+    this->cargaEscritura->escribir(&trabajo,sizeof(trabajo));
+
+    //TODO:DESTRUIR EL FIFO PARA QUE NO QUEDE ABIERTO, HAY QUE SABER QUE YA FUE LEIDO.
 
 
 }
 
+
+pid_t Controlador::tomarTransporteVacio(int transporte) {
+
+    pid_t pidTransporte;
+    if(transporte == BARCO) {
+        //Debo leer del fifo de los barcos vacios
+        this->barcosVaciosLectura->leer(&pidTransporte,sizeof(pidTransporte));
+    }else{
+        this->camionesVaciosLectura->leer(&pidTransporte,sizeof(pidTransporte));
+    }
+
+
+    return pidTransporte;
+
+}
+
+
+void Controlador::adaptarseAGrua() {
+
+
+    //TODO:CHECKEAR EL ORDEN
+    this->tareasAGruaLectura->abrir();
+    this->barcosVaciosLectura->abrir();
+    this->camionesVaciosLectura->abrir();
+
+}
 
 
 
@@ -235,13 +280,13 @@ void Controlador::descargarGrua(struct trabajo trabajo){
 void Controlador::atenderCamionCargado(struct trabajo trabajo){
 
     //Primero tiene que checkear que haya una grua disponible
-    this->semaforoGruasLibres->p(); //Las gruas haran el v();
+    //this->semaforoGruasLibres->p(); //Las gruas haran el v();
 
     //Si hay gruas disponibles, debe escribir su trabajo a la cola de trabajos a gruas
     this->tareasAGruaEscritura->escribir(&trabajo,sizeof(trabajo));
 
     //no deberia ser capaz de continuar si no hay un barco vacio
-    this->semaforoBarcosLibres->p(); //Un barco libre hara el v().
+    //this->semaforoBarcosLibres->p(); //Un barco libre hara el v().
 
     //Si llega a este punto es porque hay una grua asignada y un barco vacio
 
@@ -249,10 +294,10 @@ void Controlador::atenderCamionCargado(struct trabajo trabajo){
 
 }
 
-void Controlador::agregarCamionAFlota(int camionPid){
+void Controlador::agregarCamionAFlota(pid_t camionPid){
 
     //Primero hay que avisarle a los barcos que hay un camion libre
-    this->semaforoCamionesLibres->v();
+    //this->semaforoCamionesLibres->v();
 
     std::string path = "/tmp/" + std::to_string(camionPid);
 
@@ -269,3 +314,13 @@ struct trabajo Controlador::darCargaACamion() {
     return trabajo;
 
 };
+
+
+void Controlador::adaptarseACamion() {
+
+
+    //TODO:CHECKEAR EL ORDEN
+    this->tareasAGruaEscritura->abrir();
+    this->camionesVaciosEscritura->abrir();
+
+}

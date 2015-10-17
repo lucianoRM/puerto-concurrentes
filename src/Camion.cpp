@@ -47,26 +47,32 @@ int Camion::getCarga(){
 
 void Camion::run(Controlador* controlador) {
 
-    while(true){
+    controlador->adaptarseACamion();
+    //while(true){
         if(this->carga > 0){
+            Logger::getInstance()->log("[CAMION] Tengo carga de: " + std::to_string(this->carga) + ", pido que me descarguen");
             this->pedirDescarga(controlador);
+            Logger::getInstance()->log("[CAMION] Me descargaron.");
         }
+        Logger::getInstance()->log("[CAMION] Me voy a enlistar para envio");
         this->enlistarseParaEnvio(controlador);
+        Logger::getInstance()->log("[CAMION] Me asignaron envio, lo voy a realizar");
         this->realizarEnvio(controlador);
-    }
+        Logger::getInstance()->log("[CAMION] Envio realizado");
+    //}
 
 }
 
 
 void Camion::enlistarseParaEnvio(Controlador* controlador){
 
-    Logger::getInstance()->log("[CAMION] Esperando para recibir carga...");
+
     controlador->agregarCamionAFlota(getpid());
+    Logger::getInstance()->log("[CAMION] Esperando para recibir carga...");
 
-    //TODO:TOMAR LA CARGA CON EL METODO CORRESPONDIENTE;
-
-    //Logger::getInstance()->log("[CAMION] Fui cargado con una carga de: " + std::to_string(trabajo.carga) + " de barco: " + std::to_string(trabajo.proceso));
-
+    struct trabajo trabajo;
+    trabajo = controlador->darCargaACamion();
+    Logger::getInstance()->log("[CAMION] Fui cargado con una carga de: " + std::to_string(trabajo.carga) + " de barco: " + std::to_string(trabajo.proceso));
 
 }
 
@@ -81,6 +87,7 @@ void Camion::pedirDescarga(Controlador* controlador){
 
 
 void Camion::realizarEnvio(Controlador* controlador){
+
 
 
 }

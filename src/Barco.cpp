@@ -56,8 +56,11 @@ int Barco::getCarga(){
 
 void Barco::run(Controlador* controlador) {
 
+    controlador->adaptarseABarco();
     this->amarrar(controlador);
+    struct trabajo trabajo = this->getTrabajo();
+    controlador->atenderBarcoAmarrado(trabajo);
+    controlador->agregarBarcoAFlota(getpid());
 
-    //sleep(10);
 
 }
