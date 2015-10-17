@@ -60,7 +60,7 @@ void Barco::run(Controlador* controlador) {
     this->amarrar(controlador);
     struct trabajo trabajo = this->getTrabajo();
     controlador->atenderBarcoAmarrado(trabajo);
-    controlador->agregarBarcoAFlota(getpid());
+    //controlador->agregarBarcoAFlota(getpid());
 
 
 }

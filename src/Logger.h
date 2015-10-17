@@ -19,6 +19,7 @@ class Logger {
 public:
     static Logger* getInstance();
     void log(std::string message);
+    void log(std::string message,int r);
     static void destroy();
 private:
     static Logger* instance;
