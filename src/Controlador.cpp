@@ -21,7 +21,7 @@ Controlador::Controlador(int cantidadAmarres) {
     result+=mknod(lockLecturaCargasACamionesFile,S_IFREG|0777,0);
     result+=mknod(lockLecturaTrabajosAGruasFile,S_IFREG|0777,0);
     result+=mknod(lockEntradaFile,S_IFREG|0777,0);
-
+    result+=mknod(lockSalidaFile,S_IFREG|0777,0);
 
     if(result < 0) Logger::getInstance()->log("[CONTROLADOR] Error al crear archivos para metodos de concurrencia");
 
@@ -34,6 +34,7 @@ Controlador::Controlador(int cantidadAmarres) {
     this->lecturaCargasACamiones = new LockFile(lockLecturaCargasACamionesFile);
     this->lecturaTrabajosAGruas = new LockFile(lockLecturaTrabajosAGruasFile);
     this->entrada = new LockFile(lockEntradaFile);
+    this->salida = new LockFile(lockSalidaFile);
 
     this->tareasAGruaEscritura = new FifoEscritura(tareasAGruaFile);
     this->tareasAGruaLectura = new FifoLectura(tareasAGruaFile);
@@ -65,6 +66,7 @@ Controlador::~Controlador() {
 
 
     delete this->entrada;
+    delete this->salida;
     delete this->lecturaCargasABarcos;
     delete this->lecturaCargasACamiones;
     delete this->lecturaTrabajosAGruas;
@@ -141,6 +143,7 @@ void Controlador::destruir(){
     unlink(lockLecturaCargasACamionesFile);
     unlink(lockLecturaTrabajosAGruasFile);
     unlink(lockEntradaFile);
+    unlink(lockSalidaFile);
 
     unlink(cajaFile);
 }
@@ -233,6 +236,13 @@ void Controlador::adaptarseABarco(){
 
 }
 
+void Controlador::dejarSalirBarco() {
+    this->salida->tomarLock();
+}
+
+void Controlador::notificarSalida() {
+    this->salida->liberarLock();
+}
 
 /*##################################################################################################
  * #################################################################################################

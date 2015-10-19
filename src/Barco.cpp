@@ -25,6 +25,14 @@ void Barco::amarrar(Controlador* controlador){
     Logger::getInstance()->log("[BARCO] Pague");
 }
 
+void Barco::partir(Controlador* controlador){
+    Logger::getInstance()->log("[BARCO] Voy a pedir para salir del puerto");
+    controlador->dejarSalirBarco();
+    Logger::getInstance()->log("[BARCO] Estoy saliendo");
+    controlador->notificarSalida();
+    Logger::getInstance()->log("[BARCO] Me fui del puerto");
+}
+
 
 struct trabajo Barco::getTrabajo(){
 
@@ -75,5 +83,5 @@ void Barco::run(Controlador* controlador) {
     controlador->bloquearHastaTerminar(); //bloquea el barco hasta que el camion se cargue.
     //controlador->agregarBarcoAFlota(getpid());
 
-
+    this->partir(controlador);
 }
