@@ -14,7 +14,7 @@
 #include "Grua.h"
 #include "Administrador.h"
 
-static int cantidadBarcos = 1;
+static int cantidadBarcos = 10;
 static int cantidadAmarres = 1;
 static int cantidadGruas = 1;
 static int cantidadCamiones = 1;

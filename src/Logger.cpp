@@ -38,11 +38,15 @@ std::string Logger::getFormattedTime() {
 }
 
 void Logger::log(std::string message) {
+
+    std::string time = getFormattedTime();
+
+
     int tomarLockRes = logFile.tomarLock();
 
     std::stringstream ss;
 
-    ss << "[" << getFormattedTime() << "] [" << getpid() << "] " << message << std::endl;
+    ss << "[" << time << "] [" << getpid() << "] " << message << std::endl;
 
     std::string const log_msg = ss.str();
 
