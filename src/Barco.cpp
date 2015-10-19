@@ -6,7 +6,7 @@
 
 Barco::Barco(){
 
-    carga = 101;
+    generarCarga();
 
 }
 
@@ -41,6 +41,14 @@ struct trabajo Barco::getTrabajo(){
     trabajoBarco.proceso = pid;
 
     return trabajoBarco;
+}
+
+
+void Barco::generarCarga(){
+    srand(getpid());
+    this->carga = rand() % 1000;
+    std::cout << this->carga << std::endl;
+
 }
 
 

@@ -42,6 +42,14 @@ Controlador::Controlador(int cantidadAmarres) {
     this->camionesVaciosEscritura = new FifoEscritura(camionesVaciosFile);
     this->camionesVaciosLectura = new FifoLectura(camionesVaciosFile);
 
+    //Necesarios segun valgrind
+    this->cargaEscritura = NULL;
+    this->cargaLectura = NULL;
+    this->esperarTrabajoTerminado = NULL;
+    this->avisarTrabajoTerminado = NULL;
+    //Necesarios segun valgrind
+
+
     this->smCaja = new SharedMemory<float>(cajaFile, 'C');
     smCaja->escribir(0);
 }
@@ -67,8 +75,11 @@ Controlador::~Controlador() {
     delete this->barcosVaciosEscritura;
     delete this->camionesVaciosEscritura;
     delete this->camionesVaciosLectura;
-    delete this->cargaLectura;
-    delete this->cargaEscritura;
+
+    if(this->cargaLectura)
+        delete this->cargaLectura;
+    if(this->cargaEscritura)
+        delete this->cargaEscritura;
 
     delete this->smCaja;
 }
@@ -175,6 +186,7 @@ void Controlador::atenderBarcoAmarrado(struct trabajo trabajo){
 
     //Primero tiene que checkear que haya una grua disponible
     //this->semaforoGruasLibres->p(); //Las gruas haran el v();
+
 
     //Si hay gruas disponibles, debe escribir su trabajo a la cola de trabajos a gruas
     int res = this->tareasAGruaEscritura->escribir(&trabajo,sizeof(trabajo));
