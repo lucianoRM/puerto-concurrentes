@@ -30,5 +30,5 @@ void Grua::run(Controlador* controlador){
 
     //}
 
-
+    this->shouldRun = false;
 }

@@ -60,6 +60,7 @@ void Camion::run(Controlador* controlador) {
         Logger::getInstance()->log("[CAMION] Envio realizado");
     }
 
+    this->shouldRun = false;
 }
 
 

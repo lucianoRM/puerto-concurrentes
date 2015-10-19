@@ -7,10 +7,14 @@
 
 #include <unistd.h>
 #include <stdlib.h>
+#include "Logger.h"
 #include "Controlador.h"
-
+#include "SignalHandler.h"
+#include "SIGINT_Handler.h"
 
 class Process {
+protected:
+    bool shouldRun;
 
 public:
     Process();

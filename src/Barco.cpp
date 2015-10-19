@@ -84,4 +84,6 @@ void Barco::run(Controlador* controlador) {
     //controlador->agregarBarcoAFlota(getpid());
 
     this->partir(controlador);
+
+    this->shouldRun = false;
 }
