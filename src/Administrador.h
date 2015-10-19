@@ -10,7 +10,7 @@
 #include "MemoriaCompartida2.h"
 
 class Administrador : public Process {
-    void run(Controlador*);
+    void run(Controlador* controlador);
 };
 
 #endif //CONCU_ADMINISTRADOR_H

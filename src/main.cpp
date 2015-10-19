@@ -1,4 +1,4 @@
-//
+    //
 // Created by luciano on 12/10/15.
 //
 
@@ -14,12 +14,11 @@
 #include "Grua.h"
 #include "Administrador.h"
 
-static int cantidadBarcos = 3;
+static int cantidadBarcos = 1;
 static int cantidadAmarres = 1;
 static int cantidadGruas = 1;
 static int cantidadCamiones = 1;
-static int cantidadProcesosHijos = cantidadBarcos + cantidadGruas + cantidadCamiones + 1;
-    // + 1 = Administrador
+static int cantidadProcesosHijos = cantidadBarcos + cantidadGruas + cantidadCamiones + 1;// + 1 = Administrador
 int main(){
     Logger::getInstance()->log("Soy el master y estoy empezando la joda");
 
@@ -39,10 +38,10 @@ int main(){
         camion.start(controlador);
     }
 
-    Administrador admin;
-    admin.start(controlador);
+    //Administrador admin;
+    //admin.start(controlador);
 
-    for(int i = 0;i < cantidadProcesosHijos; i++){
+    for(int i = 0;i < cantidadProcesosHijos - 1 ; i++){
         wait(NULL);
     }
 

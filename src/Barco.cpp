@@ -58,10 +58,13 @@ int Barco::getCarga(){
 
 void Barco::run(Controlador* controlador) {
 
-    controlador->adaptarseABarco();
-    this->amarrar(controlador);
+    controlador->adaptarseABarco(); //Setea todos los metodos de concurrencia del controlador que corresponden al barco
+    this->amarrar(controlador); //Permite que el barco amarre. Tiene en cuenta la cantidad de amarres libres y que entren de a uno por vez.
     struct trabajo trabajo = this->getTrabajo();
-    controlador->atenderBarcoAmarrado(trabajo);
+
+    controlador->atenderBarcoAmarrado(trabajo); //Le da el trabajo a realizar a la grua
+
+    controlador->bloquearHastaTerminar(); //bloquea el barco hasta que el camion se cargue.
     //controlador->agregarBarcoAFlota(getpid());
 
 

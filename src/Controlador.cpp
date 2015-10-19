@@ -72,6 +72,38 @@ Controlador::~Controlador() {
 
     delete this->smCaja;
 }
+
+
+void Controlador::bloquearHastaTerminar() {
+
+    std::string path = "/tmp/" + std::to_string(getpid()) + ".tmp"; //No deberia haber problemas pero agrego .tmp para diferenciarlo de los fifos creados para cargas que tambien se generan a partir del pid.
+    this->esperarTrabajoTerminado = new FifoEscritura(path);
+    this->esperarTrabajoTerminado->abrir();
+    //Aca se va a bloquear hasta que se abra del otro lado. Cuando se desbloquee ya no va a ser necesario el fifo
+    this->esperarTrabajoTerminado->cerrar();
+    this->esperarTrabajoTerminado->eliminar();
+
+    delete this->esperarTrabajoTerminado;
+
+}
+
+
+void Controlador::notificarTransferenciaCompleta(pid_t pidFuenteDeCarga) {
+
+
+    std::string path = "/tmp/" + std::to_string(pidFuenteDeCarga) + ".tmp";
+    this->avisarTrabajoTerminado = new FifoLectura(path);
+    this->avisarTrabajoTerminado->abrir();
+    //Se va a bloquear hasta que se abra el fifo del otro lado.Cuando se desbloque ya no va a ser necesario
+    this->avisarTrabajoTerminado->cerrar();
+    this->avisarTrabajoTerminado->eliminar();
+
+    delete this->avisarTrabajoTerminado;
+
+
+}
+
+
 void Controlador::destruir(){
 
     this->semaforoAmarres->eliminar();
@@ -146,7 +178,7 @@ void Controlador::atenderBarcoAmarrado(struct trabajo trabajo){
 
     //Si hay gruas disponibles, debe escribir su trabajo a la cola de trabajos a gruas
     int res = this->tareasAGruaEscritura->escribir(&trabajo,sizeof(trabajo));
-    if(res <= 0) Logger::getInstance()->log("Escribiendo en tareasAGruaBarco",1);
+    //if(res <= 0) Logger::getInstance()->log("Escribiendo en tareasAGruaBarco",1);
 
 
     //no deberia ser capaz de continuar si no hay un camion vacio
@@ -174,7 +206,7 @@ struct trabajo Controlador::darCargaABarco(){
     struct trabajo trabajo;
     //Hay que quedarse esperando a que alguien escriba en el fifo de cargas para el barco.
     int res = this->cargaLectura->leer(&trabajo,sizeof(trabajo));
-    if(res <= 0) Logger::getInstance()->log("Leyendo de cargaLecturaBarco",1);
+    //if(res <= 0) Logger::getInstance()->log("Leyendo de cargaLecturaBarco",1);
 
     return trabajo;
 
@@ -210,7 +242,7 @@ struct trabajo Controlador::asignarTrabajoAGrua(){
 
     struct trabajo trabajo;
     int res = this->tareasAGruaLectura->leer(&trabajo,sizeof(trabajo));
-    if(res <= 0) Logger::getInstance()->log("Leyendo en tareasAGruaGrua",1);
+    //if(res <= 0) Logger::getInstance()->log("Leyendo en tareasAGruaGrua",1);
 
     return trabajo;
 
@@ -226,13 +258,13 @@ void Controlador::descargarGrua(struct trabajo trabajo, pid_t pidTransporte){
     this->cargaEscritura = new FifoEscritura(path);
 
     //Abro el fifo
-    Logger::getInstance()->log("Grua, antes de abrir carga",1);
+    //Logger::getInstance()->log("Grua, antes de abrir carga",1);
     this->cargaEscritura->abrir();
-    Logger::getInstance()->log("Grua, despues de abrir carga",1);
+    //Logger::getInstance()->log("Grua, despues de abrir carga",1);
 
     //Escribo la carga
     int res = this->cargaEscritura->escribir(&trabajo,sizeof(trabajo));
-    if(res <= 0) Logger::getInstance()->log("Escribiendo cargaEscrituraGrua",1);
+    //if(res <= 0) Logger::getInstance()->log("Escribiendo cargaEscrituraGrua",1);
 
     //TODO:DESTRUIR EL FIFO PARA QUE NO QUEDE ABIERTO, HAY QUE SABER QUE YA FUE LEIDO.
 
@@ -246,12 +278,12 @@ pid_t Controlador::tomarTransporteVacio(int transporte) {
     if(transporte == BARCO) {
         //Debo leer del fifo de los barcos vacios
         int res = this->barcosVaciosLectura->leer(&pidTransporte,sizeof(pidTransporte));
-        if(res <= 0) Logger::getInstance()->log("Leyendo barcosVaciosGrua",1);
+        //if(res <= 0) Logger::getInstance()->log("Leyendo barcosVaciosGrua",1);
     }else{
-        Logger::getInstance()->log("Grua,antes de leer camiones vacios",1);
+        //Logger::getInstance()->log("Grua,antes de leer camiones vacios",1);
         int res = this->camionesVaciosLectura->leer(&pidTransporte,sizeof(pidTransporte));
-        Logger::getInstance()->log("Grua,despues de leer camiones vacios",1);
-        if(res <= 0) Logger::getInstance()->log("Leyendo camionesVaciosGrua",1);
+        //Logger::getInstance()->log("Grua,despues de leer camiones vacios",1);
+        //if(res <= 0) Logger::getInstance()->log("Leyendo camionesVaciosGrua",1);
         perror(NULL);
     }
 
@@ -294,7 +326,7 @@ void Controlador::atenderCamionCargado(struct trabajo trabajo){
 
     //Si hay gruas disponibles, debe escribir su trabajo a la cola de trabajos a gruas
     int res = this->tareasAGruaEscritura->escribir(&trabajo,sizeof(trabajo));
-    if(res <= 0) Logger::getInstance()->log("Escribiendo tareasAGruaCamion",1);
+    //if(res <= 0) Logger::getInstance()->log("Escribiendo tareasAGruaCamion",1);
     //no deberia ser capaz de continuar si no hay un barco vacio
     //this->semaforoBarcosLibres->p(); //Un barco libre hara el v().
 
@@ -314,9 +346,9 @@ void Controlador::agregarCamionAFlota(pid_t camionPid){
     std::string path = "/tmp/" + std::to_string(camionPid);
 
     this->cargaLectura = new FifoLectura(path);
-    Logger::getInstance()->log("Camion, antes de abrir carga",1);
+    //Logger::getInstance()->log("Camion, antes de abrir carga",1);
     this->cargaLectura->abrir();
-    Logger::getInstance()->log("Camion, despues de abrir carga",1);
+    //Logger::getInstance()->log("Camion, despues de abrir carga",1);
 }
 
 struct trabajo Controlador::darCargaACamion() {
@@ -325,7 +357,7 @@ struct trabajo Controlador::darCargaACamion() {
 
     //Hay que leer del fifo de cargas
     int res = this->cargaLectura->leer(&trabajo,sizeof(trabajo));
-    if(res <= 0) Logger::getInstance()->log("Leyendo cargaCamion",1);
+    //if(res <= 0) Logger::getInstance()->log("Leyendo cargaCamion",1);
     perror(NULL);
 
     return trabajo;

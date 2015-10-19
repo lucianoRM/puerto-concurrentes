@@ -72,11 +72,20 @@ class Controlador {
         FifoEscritura* cargaEscritura;
         FifoLectura* cargaLectura;
 
+        FifoEscritura* esperarTrabajoTerminado;
+        FifoLectura* avisarTrabajoTerminado;
+
         SharedMemory<float>* smCaja;
     public:
         Controlador(int cantidadAmarres);
         ~Controlador();
         void destruir(); //destruye todos los elementos de control de concurrencia que tiene.
+
+
+        //Para comunicacion entre camion y barco para avisarse cuando ya terminaron sus cargas y descargas
+        void bloquearHastaTerminar();
+        void notificarTransferenciaCompleta(pid_t pidFuenteDeCarga);
+
 
         //Barcos
         void cederAmarre();
@@ -86,7 +95,6 @@ class Controlador {
         void  agregarBarcoAFlota(pid_t barcoPid); //Agrega barco a la flota de barcos disponibles para envios
         struct trabajo darCargaABarco();
         void adaptarseABarco(); //Abre los fifos y pipes correspondientes del modo necesario
-
 
         //Camiones
         void atenderCamionCargado(struct trabajo trabajo);
