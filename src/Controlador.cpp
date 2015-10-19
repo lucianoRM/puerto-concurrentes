@@ -42,9 +42,8 @@ Controlador::Controlador(int cantidadAmarres) {
     this->camionesVaciosEscritura = new FifoEscritura(camionesVaciosFile);
     this->camionesVaciosLectura = new FifoLectura(camionesVaciosFile);
 
-
-
-
+    this->smCaja = new SharedMemory<float>(cajaFile, 'C');
+    smCaja->escribir(0);
 }
 
 
@@ -71,7 +70,7 @@ Controlador::~Controlador() {
     delete this->cargaLectura;
     delete this->cargaEscritura;
 
-
+    delete this->smCaja;
 }
 void Controlador::destruir(){
 
@@ -100,6 +99,7 @@ void Controlador::destruir(){
     unlink(lockLecturaTrabajosAGruasFile);
     unlink(lockEntradaFile);
 
+    unlink(cajaFile);
 }
 
 /*##################################################################################################
@@ -330,7 +330,7 @@ struct trabajo Controlador::darCargaACamion() {
 
     return trabajo;
 
-};
+}
 
 
 void Controlador::adaptarseACamion() {
@@ -340,4 +340,14 @@ void Controlador::adaptarseACamion() {
     this->tareasAGruaEscritura->abrir();
     this->camionesVaciosEscritura->abrir();
 
+}
+
+float Controlador::valorCaja() {
+    return smCaja->leer();
+}
+
+void Controlador::cargarCaja(float v) {
+    float valor = valorCaja();
+    valor += v;
+    smCaja->escribir(valor);
 }

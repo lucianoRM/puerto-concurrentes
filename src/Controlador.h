@@ -17,7 +17,7 @@
 #include "Logger.h"
 #include <errno.h>
 #include <string>
-
+#include "SharedMemory.h"
 
 static const char* const semaforoAmarresFile = "/tmp/semaforoAmarres.tmp";
 static const char* const semaforoGruasLibresFile = "/tmp/semaforoGruasLibres.tmp";
@@ -30,6 +30,7 @@ static const char* const lockEntradaFile = "/tmp/lockEntrada.tmp";
 static const char* const tareasAGruaFile = "/tmp/tareasAGrua.tmp";
 static const char* const camionesVaciosFile = "/tmp/camionesVacios.tmp";
 static const char* const barcosVaciosFile = "/tmp/barcosVacios.tmp";
+static const char* const cajaFile = "/tmp/caja.tmp";
 
 //NO CAMBIAR PORQUE SE NECESITA QUE SEAN ESTOS NUMEROS--------------------------------------
 
@@ -71,7 +72,7 @@ class Controlador {
         FifoEscritura* cargaEscritura;
         FifoLectura* cargaLectura;
 
-
+        SharedMemory<float>* smCaja;
     public:
         Controlador(int cantidadAmarres);
         ~Controlador();
@@ -99,6 +100,10 @@ class Controlador {
         void descargarGrua(struct trabajo trabajo,pid_t pidTransporte);
         pid_t tomarTransporteVacio(int transporte);
         void adaptarseAGrua(); //Abre los fifos y pipes correspondientes del modo necesario
+
+        // Caja
+        void cargarCaja(float);
+        float valorCaja();
 };
 
 

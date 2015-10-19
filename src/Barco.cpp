@@ -6,7 +6,7 @@
 
 Barco::Barco(){
 
-    carga = 100;
+    carga = 101;
 
 }
 
@@ -21,6 +21,8 @@ void Barco::amarrar(Controlador* controlador){
     Logger::getInstance()->log("[BARCO] Estoy entrando");
     controlador->liberarEntrada();
     Logger::getInstance()->log("[BARCO] Amarre");
+    controlador->cargarCaja((float)carga*2/100);
+    Logger::getInstance()->log("[BARCO] Pague");
 }
 
 
