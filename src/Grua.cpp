@@ -9,6 +9,7 @@ void Grua::initialize(Controlador* controlador) {
 }
 
 void Grua::run(Controlador* controlador){
+
     struct trabajo trabajo;
     std::string transporte;
     Logger::getInstance()->log("[GRUA] Voy a empezar mi trabajo");
@@ -29,5 +30,4 @@ void Grua::run(Controlador* controlador){
 
     controlador->descargarGrua(trabajo,pidTransporte);
 
-    this->shouldRun = false;
 }

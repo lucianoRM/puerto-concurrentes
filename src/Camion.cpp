@@ -54,7 +54,7 @@ void Camion::run(Controlador* controlador) {
 }
 
 
-void Camion::enlistarseParaEnvio(Controlador* controlador){
+int Camion::enlistarseParaEnvio(Controlador* controlador){
 
     controlador->agregarCamionAFlota(getpid());
     Logger::getInstance()->log("[CAMION] Esperando para recibir carga...");
@@ -67,7 +67,7 @@ void Camion::enlistarseParaEnvio(Controlador* controlador){
 
 }
 
-void Camion::pedirDescarga(Controlador* controlador){
+int Camion::pedirDescarga(Controlador* controlador){
 
     struct trabajo trabajo = this->getTrabajo();
     Logger::getInstance()->log("[CAMION] Estoy cargado con una carga de: " + std::to_string(trabajo.carga) + " ,pido que me descarguen");
@@ -75,11 +75,10 @@ void Camion::pedirDescarga(Controlador* controlador){
 
     controlador->bloquearHastaTerminar();
 
-
 }
 
 
-void Camion::realizarEnvio(Controlador* controlador){
+int Camion::realizarEnvio(Controlador* controlador){
 
     srand(time(NULL));
     int vieneConCarga = rand() % 2;

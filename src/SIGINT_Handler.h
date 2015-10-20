@@ -5,6 +5,7 @@
 #include <assert.h>
 
 #include "EventHandler.h"
+#include "Logger.h"
 
 class SIGINT_Handler : public EventHandler {
 
@@ -13,8 +14,9 @@ class SIGINT_Handler : public EventHandler {
 
 	public:
 
-		SIGINT_Handler () : gracefulQuit(0) {
-		}
+		SIGINT_Handler () :
+				gracefulQuit(0)
+		{}
 
 		~SIGINT_Handler () {
 		}
@@ -22,6 +24,7 @@ class SIGINT_Handler : public EventHandler {
 		virtual int handleSignal ( int signum ) {
 			assert ( signum == SIGINT );
 			this->gracefulQuit = 1;
+			Logger::getInstance()->log("ME LLEGO LA SEÑAL PARA MORIR");
 			return 0;
 		}
 
