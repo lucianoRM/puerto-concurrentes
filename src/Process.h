@@ -11,6 +11,8 @@
 #include "Controlador.h"
 #include "SignalHandler.h"
 #include "SIGINT_Handler.h"
+#include "EndProcessException.h"
+
 
 class Process {
 protected:
