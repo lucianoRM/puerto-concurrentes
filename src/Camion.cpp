@@ -48,17 +48,15 @@ int Camion::getCarga(){
 void Camion::run(Controlador* controlador) {
 
     controlador->adaptarseACamion();
-    while(true){
-        if(this->carga > 0){
-            Logger::getInstance()->log("[CAMION] Tengo carga de: " + std::to_string(this->carga) + ", pido que me descarguen");
-            this->pedirDescarga(controlador);
-            Logger::getInstance()->log("[CAMION] Me descargaron.");
-        }
-        Logger::getInstance()->log("[CAMION] Me voy a enlistar para envio");
-        this->enlistarseParaEnvio(controlador);
-        this->realizarEnvio(controlador);
-        Logger::getInstance()->log("[CAMION] Envio realizado");
+    if(this->carga > 0){
+        Logger::getInstance()->log("[CAMION] Tengo carga de: " + std::to_string(this->carga) + ", pido que me descarguen");
+        this->pedirDescarga(controlador);
+        Logger::getInstance()->log("[CAMION] Me descargaron.");
     }
+    Logger::getInstance()->log("[CAMION] Me voy a enlistar para envio");
+    this->enlistarseParaEnvio(controlador);
+    this->realizarEnvio(controlador);
+    Logger::getInstance()->log("[CAMION] Envio realizado");
 
     this->shouldRun = false;
 }

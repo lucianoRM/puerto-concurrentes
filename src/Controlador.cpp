@@ -241,7 +241,16 @@ void Controlador::dejarSalirBarco() {
 }
 
 void Controlador::notificarSalida() {
-    this->salida->liberarLock();
+    int res = this->salida->liberarLock();
+    if (res < 0) {
+        std::string err = strerror(errno);
+        Logger::getInstance()->log("Error libreando salida!" + err);
+    }
+    res = this->semaforoAmarres->v();
+    if (res < 0) {
+        std::string err = strerror(errno);
+        Logger::getInstance()->log("Error liberando amarre!" + err);
+    }
 }
 
 /*##################################################################################################
