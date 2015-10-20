@@ -166,6 +166,8 @@ void Controlador::cederAmarre(){
     if (res < 0) {
         std::string err = strerror(errno);
         Logger::getInstance()->log("Error cediendo amarre!" + err);
+        EndProcessException e;
+        throw e;
     }
 }
 
@@ -174,15 +176,23 @@ void Controlador::dejarPasarBarco(){
 
     int tomarLockRes = this->entrada->tomarLock();
     if (tomarLockRes != 0) {
-        Logger::getInstance()->log("Error al tomar el lock de la entrada");
-        return;
+        std::string err = strerror(errno);
+        Logger::getInstance()->log("Error al tomar el lock de la entrada: " + err);
+        EndProcessException e;
+        throw e;
     }
 
 }
 
 void Controlador::liberarEntrada(){
 
-    this->entrada->liberarLock();
+    int liberarLockRes = this->entrada->liberarLock();
+    if (liberarLockRes != 0) {
+        std::string err = strerror(errno);
+        Logger::getInstance()->log("Error al liberar el lock de la entrada " + err);
+        EndProcessException e;
+        throw e;
+    }
 }
 
 
@@ -195,8 +205,12 @@ void Controlador::atenderBarcoAmarrado(struct trabajo trabajo){
 
     //Si hay gruas disponibles, debe escribir su trabajo a la cola de trabajos a gruas
     int res = this->tareasAGruaEscritura->escribir(&trabajo,sizeof(trabajo));
-    //if(res <= 0) Logger::getInstance()->log("Escribiendo en tareasAGruaBarco",1);
-
+    if (res != 0) {
+        std::string err = strerror(errno);
+        Logger::getInstance()->log("Error al escribir en tareas a grua " + err);
+        EndProcessException e;
+        throw e;
+    }
 
     //no deberia ser capaz de continuar si no hay un camion vacio
     //this->semaforoCamionesLibres->p(); //Un camion libre hara el v().
@@ -209,7 +223,13 @@ void Controlador::atenderBarcoAmarrado(struct trabajo trabajo){
 
 void Controlador::agregarBarcoAFlota(pid_t barcoPid){
 
-    this->barcosVaciosEscritura->escribir(&barcoPid,sizeof(barcoPid));
+    int res = this->barcosVaciosEscritura->escribir(&barcoPid,sizeof(barcoPid));
+    if (res < 0) {
+        std::string err = strerror(errno);
+        Logger::getInstance()->log("Error al escribir en barcos vacios " + err);
+        EndProcessException e;
+        throw e;
+    }
     //Primero hay que abrir un fifo para que pueda recibir la carga
     std::string path = "/tmp/" + std::to_string(barcoPid);
     cargaLectura = new FifoLectura(path);
@@ -224,10 +244,13 @@ struct trabajo Controlador::darCargaABarco(){
 
     //Hay que quedarse esperando a que alguien escriba en el fifo de cargas para el barco.
     int res = this->cargaLectura->leer(&trabajo,sizeof(trabajo));
-    //if(res <= 0) Logger::getInstance()->log("Leyendo de cargaLecturaBarco",1);
-
+    if (res < 0) {
+        std::string err = strerror(errno);
+        Logger::getInstance()->log("Error al leer de cargaLectura " + err);
+        EndProcessException e;
+        throw e;
+    }
     return trabajo;
-
 }
 
 void Controlador::adaptarseABarco(){
@@ -240,7 +263,14 @@ void Controlador::adaptarseABarco(){
 }
 
 void Controlador::dejarSalirBarco() {
-    this->salida->tomarLock();
+    int res = this->salida->tomarLock();
+    if (res < 0) {
+        std::string err = strerror(errno);
+        Logger::getInstance()->log("Error al tomar el lock de salida " + err);
+        EndProcessException e;
+        throw e;
+    }
+
 }
 
 void Controlador::notificarSalida() {
@@ -248,11 +278,16 @@ void Controlador::notificarSalida() {
     if (res < 0) {
         std::string err = strerror(errno);
         Logger::getInstance()->log("Error libreando salida!" + err);
+        EndProcessException e;
+        throw e;
     }
+
     res = this->semaforoAmarres->v();
     if (res < 0) {
         std::string err = strerror(errno);
         Logger::getInstance()->log("Error liberando amarre!" + err);
+        EndProcessException e;
+        throw e;
     }
 }
 
@@ -270,14 +305,30 @@ void Controlador::notificarSalida() {
 struct trabajo Controlador::asignarTrabajoAGrua(){
 
     //Pido el lock de lectura de trabajos para las gruas
-    this->lecturaTrabajosAGruas->tomarLock();
+    int res = this->lecturaTrabajosAGruas->tomarLock();
+    if (res < 0) {
+        std::string err = strerror(errno);
+        Logger::getInstance()->log("Error tomando el lock para lectura trabajos de grua " + err);
+        EndProcessException e;
+        throw e;
+    }
 
     struct trabajo trabajo;
-    int res = this->tareasAGruaLectura->leer(&trabajo,sizeof(trabajo));
-    //if(res <= 0) Logger::getInstance()->log("Leyendo en tareasAGruaGrua",1);
-
+    res = this->tareasAGruaLectura->leer(&trabajo,sizeof(trabajo));
+    if (res < 0) {
+        std::string err = strerror(errno);
+        Logger::getInstance()->log("Error leyendo de tareas grua " + err);
+        EndProcessException e;
+        throw e;
+    }
     //Luego de leer el trabajo hay que liberar el lock para que otras gruas puedan leer.
-    this->lecturaTrabajosAGruas->liberarLock();
+    res = this->lecturaTrabajosAGruas->liberarLock();
+    if (res < 0) {
+        std::string err = strerror(errno);
+        Logger::getInstance()->log("Error liberando el lock de lectura trabajos de grua " + err);
+        EndProcessException e;
+        throw e;
+    }
 
     return trabajo;
 
@@ -299,11 +350,14 @@ void Controlador::descargarGrua(struct trabajo trabajo, pid_t pidTransporte){
 
     //Escribo la carga
     int res = this->cargaEscritura->escribir(&trabajo,sizeof(trabajo));
-    //if(res <= 0) Logger::getInstance()->log("Escribiendo cargaEscrituraGrua",1);
+    if (res < 0) {
+        std::string err = strerror(errno);
+        Logger::getInstance()->log("Error escribiendo en carga escritura " + err);
+        EndProcessException e;
+        throw e;
+    }
+
     this->cargaEscritura->cerrar();
-
-
-
 }
 
 
@@ -316,6 +370,8 @@ pid_t Controlador::tomarTransporteVacio(int transporte) {
         if (res <= 0) {
             std::string err = strerror(errno);
             Logger::getInstance()->log("Error leyendo de barcos vacios" + err);
+            EndProcessException e;
+            throw e;
         }
     }else{
         //Logger::getInstance()->log("Grua,antes de leer camiones vacios",1);
@@ -323,13 +379,13 @@ pid_t Controlador::tomarTransporteVacio(int transporte) {
         if (res <= 0) {
             std::string err = strerror(errno);
             Logger::getInstance()->log("Error leyendo de camiones vacios" + err);
+            EndProcessException e;
+            throw e;
         }
         //Logger::getInstance()->log("Grua,despues de leer camiones vacios",1);
     }
 
-
     return pidTransporte;
-
 }
 
 
@@ -355,10 +411,6 @@ void Controlador::adaptarseAGrua() {
  */
 
 
-
-
-
-
 void Controlador::atenderCamionCargado(struct trabajo trabajo){
 
     //Primero tiene que checkear que haya una grua disponible
@@ -369,14 +421,13 @@ void Controlador::atenderCamionCargado(struct trabajo trabajo){
     if (res <= 0) {
         std::string err = strerror(errno);
         Logger::getInstance()->log("Error escribiendo trabajo para la grua (descargar camion)" + err);
+        EndProcessException e;
+        throw e;
     }
     //no deberia ser capaz de continuar si no hay un barco vacio
     //this->semaforoBarcosLibres->p(); //Un barco libre hara el v().
 
     //Si llega a este punto es porque hay una grua asignada y un barco vacio
-
-
-
 }
 
 void Controlador::agregarCamionAFlota(pid_t camionPid){
@@ -384,11 +435,18 @@ void Controlador::agregarCamionAFlota(pid_t camionPid){
     //Primero hay que avisarle a los barcos que hay un camion libre
     //this->semaforoCamionesLibres->v();
 
-    this->camionesVaciosEscritura->escribir(&camionPid,sizeof(camionPid));
+    int res = this->camionesVaciosEscritura->escribir(&camionPid,sizeof(camionPid));
+    if (res <= 0) {
+        std::string err = strerror(errno);
+        Logger::getInstance()->log("Error escribiendo en camiones vacios" + err);
+        EndProcessException e;
+        throw e;
+    }
 
     std::string path = "/tmp/" + std::to_string(camionPid);
 
     this->cargaLectura = new FifoLectura(path);
+
     //Logger::getInstance()->log("Camion, antes de abrir carga",1);
     this->cargaLectura->abrir();
     //Logger::getInstance()->log("Camion, despues de abrir carga",1);
@@ -400,11 +458,11 @@ struct trabajo Controlador::darCargaACamion() {
 
     //Hay que leer del fifo de cargas
     int res = this->cargaLectura->leer(&trabajo,sizeof(trabajo));
-    //if(res <= 0) Logger::getInstance()->log("Leyendo cargaCamion",1);
-
     if (res <= 0) {
         std::string err = strerror(errno);
         Logger::getInstance()->log("Error leyendo carga para el camion!" + err);
+        EndProcessException e;
+        throw e;
     }
 
     this->cargaLectura->cerrar();
@@ -412,14 +470,11 @@ struct trabajo Controlador::darCargaACamion() {
     //Hay que eliminar el fifo para que el archivo no quede abierto
     this->cargaLectura->eliminar();
 
-
-
     return trabajo;
 }
 
 
 void Controlador::adaptarseACamion() {
-
 
     //TODO:CHECKEAR EL ORDEN
     this->tareasAGruaEscritura->abrir();
