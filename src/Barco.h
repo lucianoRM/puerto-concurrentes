@@ -20,8 +20,7 @@ class Barco: public Process {
     private:
         void amarrar(Controlador* controlador);
         void partir(Controlador* controlador);
-
-    void generarCarga(); //Devuelve un valor aleatorio para la carga del barco
+        void generarCarga(); //Devuelve un valor aleatorio para la carga del barco
 
     public:
         Barco();

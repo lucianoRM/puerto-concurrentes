@@ -20,6 +20,8 @@ static int cantidadGruas = 1;
 static int cantidadCamiones = 1;
 static int cantidadProcesosHijos = cantidadBarcos + cantidadGruas + cantidadCamiones + 1;// + 1 = Administrador
 int main(){
+
+    Logger::getInstance()->log("\n\n\n*************NEW RUN*************");
     Logger::getInstance()->log("Soy el master y estoy empezando la joda");
 
     Controlador* controlador = new Controlador(cantidadAmarres);

@@ -11,10 +11,6 @@ Controlador::Controlador(int cantidadAmarres) {
     int result = 0;
     //Semaforos
     result+=mknod(semaforoAmarresFile,S_IFREG|0777,0);
-    result+=mknod(semaforoGruasLibresFile,S_IFREG|0777,0);
-    result+=mknod(semaforoCamionesLibresFile,S_IFREG|0777,0);
-    result+=mknod(semaforoBarcosLibresFile,S_IFREG|0777,0);
-
 
     //Locks
     result+=mknod(lockLecturaCargasABarcosFile,S_IFREG|0777,0);
@@ -26,9 +22,6 @@ Controlador::Controlador(int cantidadAmarres) {
     if(result < 0) Logger::getInstance()->log("[CONTROLADOR] Error al crear archivos para metodos de concurrencia");
 
     this->semaforoAmarres = new Semaforo(semaforoAmarresFile,cantidadAmarres);
-    this->semaforoGruasLibres = new Semaforo(semaforoGruasLibresFile,0);
-    this->semaforoCamionesLibres = new Semaforo(semaforoCamionesLibresFile,0);
-    this->semaforoBarcosLibres = new Semaforo(semaforoBarcosLibresFile,0);
 
     this->lecturaCargasABarcos = new LockFile(lockLecturaCargasABarcosFile);
     this->lecturaCargasACamiones = new LockFile(lockLecturaCargasACamionesFile);
@@ -60,10 +53,6 @@ Controlador::~Controlador() {
 
 
     delete this->semaforoAmarres;
-    delete this->semaforoBarcosLibres;
-    delete this->semaforoCamionesLibres;
-    delete this->semaforoGruasLibres;
-
 
     delete this->entrada;
     delete this->salida;
@@ -120,9 +109,6 @@ void Controlador::notificarTransferenciaCompleta(pid_t pidFuenteDeCarga) {
 void Controlador::destruir(){
 
     this->semaforoAmarres->eliminar();
-    this->semaforoGruasLibres->eliminar();
-    this->semaforoCamionesLibres->eliminar();
-    this->semaforoBarcosLibres->eliminar();
 
     this->tareasAGruaEscritura->eliminar();
     this->tareasAGruaLectura->eliminar();
@@ -132,9 +118,6 @@ void Controlador::destruir(){
     this->camionesVaciosEscritura->eliminar();
 
     unlink(semaforoAmarresFile);
-    unlink(semaforoGruasLibresFile);
-    unlink(semaforoCamionesLibresFile);
-    unlink(semaforoBarcosLibresFile);
 
 
     //Locks
