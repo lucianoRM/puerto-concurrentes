@@ -248,14 +248,15 @@ void Controlador::notificarSalida() {
 
 struct trabajo Controlador::asignarTrabajoAGrua(){
 
-    //TODO:Pedir lock de lectura de trabajos
-
-    //Avisar que hay una grua libre para trabajar
-    //this->semaforoGruasLibres->v();
+    //Pido el lock de lectura de trabajos para las gruas
+    this->lecturaTrabajosAGruas->tomarLock();
 
     struct trabajo trabajo;
     int res = this->tareasAGruaLectura->leer(&trabajo,sizeof(trabajo));
     //if(res <= 0) Logger::getInstance()->log("Leyendo en tareasAGruaGrua",1);
+
+    //Luego de leer el trabajo hay que liberar el lock para que otras gruas puedan leer.
+    this->lecturaTrabajosAGruas->liberarLock();
 
     return trabajo;
 
@@ -280,7 +281,6 @@ void Controlador::descargarGrua(struct trabajo trabajo, pid_t pidTransporte){
     //if(res <= 0) Logger::getInstance()->log("Escribiendo cargaEscrituraGrua",1);
     this->cargaEscritura->cerrar();
 
-    //TODO:DESTRUIR EL FIFO PARA QUE NO QUEDE ABIERTO, HAY QUE SABER QUE YA FUE LEIDO.
 
 
 }

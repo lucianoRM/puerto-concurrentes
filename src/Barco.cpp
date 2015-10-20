@@ -59,8 +59,6 @@ void Barco::generarCarga(){
     gettimeofday(&tv,NULL);
     srand(tv.tv_usec);
     this->carga = rand() % 1000;
-    std::cout << this->carga << std::endl;
-
 }
 
 
@@ -87,8 +85,10 @@ void Barco::run(Controlador* controlador) {
     controlador->atenderBarcoAmarrado(trabajo); //Le da el trabajo a realizar a la grua
 
     controlador->bloquearHastaTerminar(); //bloquea el barco hasta que el camion se cargue.
-    //controlador->agregarBarcoAFlota(getpid());
 
+    if(!(getpid() % 2)) { //Si el pid del barco es par, se queda esperando una carga,sino se va vacio
+        controlador->agregarBarcoAFlota(getpid());
+    }
     this->partir(controlador);
 
     this->shouldRun = false;

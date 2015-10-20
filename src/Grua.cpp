@@ -29,5 +29,5 @@ void Grua::run(Controlador* controlador){
 
     controlador->descargarGrua(trabajo,pidTransporte);
 
-    this->shouldRun = false;
+    //this->shouldRun = false;
 }
