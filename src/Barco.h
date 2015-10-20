@@ -26,7 +26,7 @@ class Barco: public Process {
     public:
         Barco();
         ~Barco();
-
+        void initialize(Controlador* controlador);
         void run(Controlador* controlador);
         struct trabajo getTrabajo();
         void setCarga(int nuevaCarga);

@@ -71,10 +71,12 @@ int Barco::getCarga(){
 
 }
 
+void Barco::initialize(Controlador* controlador) {
+    controlador->adaptarseABarco(); //Setea todos los metodos de concurrencia del controlador que corresponden al barco
+}
 
 void Barco::run(Controlador* controlador) {
 
-    controlador->adaptarseABarco(); //Setea todos los metodos de concurrencia del controlador que corresponden al barco
     this->amarrar(controlador); //Permite que el barco amarre. Tiene en cuenta la cantidad de amarres libres y que entren de a uno por vez.
     struct trabajo trabajo = this->getTrabajo();
 

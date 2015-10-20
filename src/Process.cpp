@@ -18,6 +18,9 @@ pid_t Process::start(Controlador* controlador) {
         // se registra el event handler declarado antes
         SignalHandler :: getInstance()->registrarHandler ( SIGINT,&sigint_handler );
 
+        //Give the process a chance to init itself before running
+        this->initialize(controlador);
+
         // mientras no se reciba la senial SIGINT, el proceso realiza su trabajo
         while (shouldRun && sigint_handler.getGracefulQuit() == 0 ) {
             this->run(controlador);

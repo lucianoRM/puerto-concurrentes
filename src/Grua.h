@@ -13,12 +13,10 @@ class Grua :public Process{
     private:
         struct trabajo trabajo;
     public:
+        void initialize(Controlador* controlador);
         void run(Controlador* controlador);
         void pedirTrabajo(Controlador* controlador);
         void moverCarga(Controlador* controlador);
-
-
-
 };
 
 

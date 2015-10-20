@@ -131,7 +131,6 @@ void Controlador::destruir(){
     this->camionesVaciosLectura->eliminar();
     this->camionesVaciosEscritura->eliminar();
 
-
     unlink(semaforoAmarresFile);
     unlink(semaforoGruasLibresFile);
     unlink(semaforoCamionesLibresFile);
@@ -309,13 +308,18 @@ pid_t Controlador::tomarTransporteVacio(int transporte) {
     if(transporte == BARCO) {
         //Debo leer del fifo de los barcos vacios
         int res = this->barcosVaciosLectura->leer(&pidTransporte,sizeof(pidTransporte));
-        //if(res <= 0) Logger::getInstance()->log("Leyendo barcosVaciosGrua",1);
+        if (res <= 0) {
+            std::string err = strerror(errno);
+            Logger::getInstance()->log("Error leyendo de barcos vacios" + err);
+        }
     }else{
         //Logger::getInstance()->log("Grua,antes de leer camiones vacios",1);
         int res = this->camionesVaciosLectura->leer(&pidTransporte,sizeof(pidTransporte));
+        if (res <= 0) {
+            std::string err = strerror(errno);
+            Logger::getInstance()->log("Error leyendo de camiones vacios" + err);
+        }
         //Logger::getInstance()->log("Grua,despues de leer camiones vacios",1);
-        //if(res <= 0) Logger::getInstance()->log("Leyendo camionesVaciosGrua",1);
-        perror(NULL);
     }
 
 
@@ -357,7 +361,10 @@ void Controlador::atenderCamionCargado(struct trabajo trabajo){
 
     //Si hay gruas disponibles, debe escribir su trabajo a la cola de trabajos a gruas
     int res = this->tareasAGruaEscritura->escribir(&trabajo,sizeof(trabajo));
-    //if(res <= 0) Logger::getInstance()->log("Escribiendo tareasAGruaCamion",1);
+    if (res <= 0) {
+        std::string err = strerror(errno);
+        Logger::getInstance()->log("Error escribiendo trabajo para la grua (descargar camion)" + err);
+    }
     //no deberia ser capaz de continuar si no hay un barco vacio
     //this->semaforoBarcosLibres->p(); //Un barco libre hara el v().
 
@@ -388,8 +395,10 @@ struct trabajo Controlador::darCargaACamion() {
 
     //Hay que leer del fifo de cargas
     int res = this->cargaLectura->leer(&trabajo,sizeof(trabajo));
-    //if(res <= 0) Logger::getInstance()->log("Leyendo cargaCamion",1);
-    perror(NULL);
+    if (res <= 0) {
+        std::string err = strerror(errno);
+        Logger::getInstance()->log("Error leyendo carga para el camion!" + err);
+    }
 
     return trabajo;
 

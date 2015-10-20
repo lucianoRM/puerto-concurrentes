@@ -15,6 +15,7 @@
 class Process {
 protected:
     bool shouldRun;
+    virtual void initialize(Controlador* controlador) = 0;
 
 public:
     Process();

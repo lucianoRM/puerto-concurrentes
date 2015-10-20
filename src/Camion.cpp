@@ -4,16 +4,9 @@
 
 #include "Camion.h"
 
-Camion::Camion(){
-
-    carga = 0;
-
-}
-
+Camion::Camion():carga(0) {}
 
 Camion::~Camion(){}
-
-
 
 struct trabajo Camion::getTrabajo(){
 
@@ -44,10 +37,11 @@ int Camion::getCarga(){
 
 }
 
+void Camion::initialize(Controlador* controlador) {
+    controlador->adaptarseACamion();
+}
 
 void Camion::run(Controlador* controlador) {
-
-    controlador->adaptarseACamion();
     if(this->carga > 0){
         Logger::getInstance()->log("[CAMION] Tengo carga de: " + std::to_string(this->carga) + ", pido que me descarguen");
         this->pedirDescarga(controlador);
