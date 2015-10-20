@@ -56,6 +56,7 @@ Controlador::~Controlador() {
 
     delete this->entrada;
     delete this->salida;
+
     delete this->lecturaCargasABarcos;
     delete this->lecturaCargasACamiones;
     delete this->lecturaTrabajosAGruas;
@@ -71,6 +72,10 @@ Controlador::~Controlador() {
         delete this->cargaLectura;
     if(this->cargaEscritura)
         delete this->cargaEscritura;
+    if(this->esperarTrabajoTerminado)
+        delete this->esperarTrabajoTerminado;
+    if(this->avisarTrabajoTerminado)
+        delete this->avisarTrabajoTerminado;
 
     delete this->smCaja;
 }
@@ -129,6 +134,21 @@ void Controlador::destruir(){
 
     unlink(cajaFile);
 }
+
+
+void Controlador::destruirControlesEspecificos() {
+
+    if (this->cargaEscritura)
+        this->cargaEscritura->eliminar();
+    if (this->cargaLectura)
+        this->cargaLectura->eliminar();
+    if (this->esperarTrabajoTerminado)
+        this->esperarTrabajoTerminado->eliminar();
+    if (this->avisarTrabajoTerminado)
+        this->avisarTrabajoTerminado->eliminar();
+
+}
+
 
 /*##################################################################################################
  * #################################################################################################

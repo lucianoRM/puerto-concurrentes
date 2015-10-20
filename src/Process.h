@@ -16,6 +16,7 @@ class Process {
 protected:
     bool shouldRun;
     virtual void initialize(Controlador* controlador) = 0;
+    void destroy(Controlador* controlador);
 
 public:
     Process();

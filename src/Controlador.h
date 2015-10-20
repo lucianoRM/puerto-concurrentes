@@ -78,6 +78,7 @@ class Controlador {
         Controlador(int cantidadAmarres);
         ~Controlador();
         void destruir(); //destruye todos los elementos de control de concurrencia que tiene.
+        void destruirControlesEspecificos(); //Destruye los fifos de cargas que cada barco o camion abrio con su pid y los de aviso.
 
 
         //Para comunicacion entre camion y barco para avisarse cuando ya terminaron sus cargas y descargas

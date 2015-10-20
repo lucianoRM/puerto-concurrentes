@@ -6,6 +6,15 @@
 
 Process::Process():shouldRun(true) {}
 
+
+
+void Process::destroy(Controlador *controlador) {
+
+    controlador->destruirControlesEspecificos();
+}
+
+
+
 pid_t Process::start(Controlador* controlador) {
     pid_t pid = fork();
 

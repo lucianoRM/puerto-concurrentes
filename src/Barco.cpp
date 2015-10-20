@@ -26,6 +26,8 @@ int Barco::amarrar(Controlador* controlador){
     Logger::getInstance()->log("[BARCO] Pague");
 }
 
+
+
 int Barco::partir(Controlador* controlador){
     Logger::getInstance()->log("[BARCO] Voy a pedir para salir del puerto");
     controlador->dejarSalirBarco();

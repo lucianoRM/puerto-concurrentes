@@ -42,6 +42,8 @@ int main(){
     int cantidadGruas = C::gruas;
     int cantidadCamiones = C::camiones;
 
+    Logger::getInstance()->log("[MAIN] Hay: " +std::to_string(cantidadBarcos) + " barcos, " + std::to_string(cantidadAmarres) + " amarres, " + std::to_string(cantidadCamiones) + " camiones y " + std::to_string(cantidadGruas) + " gruas");
+
     int cantidadProcesosHijos = cantidadBarcos + cantidadGruas + cantidadCamiones + 1;// + 1 = Administrador
 
     std::vector<pid_t> barcos;
@@ -72,33 +74,13 @@ int main(){
     Logger::getInstance()->log("Soy el master y estoy esperando a los barcos");
     esperarHijos("BARCO", barcos);
 
+    Logger::getInstance()->log("Soy el master y voy a terminar a los camiones");
+    esperarHijos("CAMION", camiones);
+
     Logger::getInstance()->log("Soy el master y voy a terminar a las gruas");
     terminarHijos("GRUA", gruas);
 
-    Logger::getInstance()->log("Soy el master y voy a terminar a los camiones");
-    terminarHijos("CAMION", camiones);
 
-    for (int i = 0; i < cantidadBarcos; i++) {
-        Barco barco;
-        barco.start(controlador);
-    }
-
-    for (int i = 0; i < cantidadGruas; i++) {
-        Grua grua;
-        grua.start(controlador);
-    }
-
-    for (int i = 0; i < cantidadCamiones; i++) {
-        Camion camion;
-        camion.start(controlador);
-    }
-
-    //Administrador admin;
-    //admin.start(controlador);
-
-    for (int i = 0; i < cantidadProcesosHijos - 1; i++) {
-        wait(NULL);
-    }
 
     controlador->destruir();
     delete controlador;
