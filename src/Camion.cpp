@@ -61,9 +61,10 @@ int Camion::enlistarseParaEnvio(Controlador* controlador){
 
     struct trabajo trabajo;
     trabajo = controlador->darCargaACamion();
+
     //Hay que avisar al barco que ya termino la descarga
     controlador->notificarTransferenciaCompleta(trabajo.proceso);
-    Logger::getInstance()->log("[CAMION] Fui cargado con una carga de: " + std::to_string(trabajo.carga) + " de barco: " + std::to_string(trabajo.proceso));
+    //Logger::getInstance()->log("[CAMION] Fui cargado con una carga de: " + std::to_string(trabajo.carga) + " de barco: " + std::to_string(trabajo.proceso));
 
 }
 
