@@ -14,6 +14,7 @@
 
 
 #include "LockFile.h"
+#include <sys/time.h>
 
 class Logger {
 public:

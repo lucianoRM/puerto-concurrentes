@@ -11,10 +11,6 @@ Controlador::Controlador(int cantidadAmarres) {
     int result = 0;
     //Semaforos
     result+=mknod(semaforoAmarresFile,S_IFREG|0777,0);
-    result+=mknod(semaforoGruasLibresFile,S_IFREG|0777,0);
-    result+=mknod(semaforoCamionesLibresFile,S_IFREG|0777,0);
-    result+=mknod(semaforoBarcosLibresFile,S_IFREG|0777,0);
-
 
     //Locks
     result+=mknod(lockLecturaCargasABarcosFile,S_IFREG|0777,0);
@@ -26,9 +22,6 @@ Controlador::Controlador(int cantidadAmarres) {
     if(result < 0) Logger::getInstance()->log("[CONTROLADOR] Error al crear archivos para metodos de concurrencia");
 
     this->semaforoAmarres = new Semaforo(semaforoAmarresFile,cantidadAmarres);
-    this->semaforoGruasLibres = new Semaforo(semaforoGruasLibresFile,0);
-    this->semaforoCamionesLibres = new Semaforo(semaforoCamionesLibresFile,0);
-    this->semaforoBarcosLibres = new Semaforo(semaforoBarcosLibresFile,0);
 
     this->lecturaCargasABarcos = new LockFile(lockLecturaCargasABarcosFile);
     this->lecturaCargasACamiones = new LockFile(lockLecturaCargasACamionesFile);
@@ -60,10 +53,6 @@ Controlador::~Controlador() {
 
 
     delete this->semaforoAmarres;
-    delete this->semaforoBarcosLibres;
-    delete this->semaforoCamionesLibres;
-    delete this->semaforoGruasLibres;
-
 
     delete this->entrada;
     delete this->salida;
@@ -120,9 +109,6 @@ void Controlador::notificarTransferenciaCompleta(pid_t pidFuenteDeCarga) {
 void Controlador::destruir(){
 
     this->semaforoAmarres->eliminar();
-    this->semaforoGruasLibres->eliminar();
-    this->semaforoCamionesLibres->eliminar();
-    this->semaforoBarcosLibres->eliminar();
 
     this->tareasAGruaEscritura->eliminar();
     this->tareasAGruaLectura->eliminar();
@@ -132,9 +118,6 @@ void Controlador::destruir(){
     this->camionesVaciosEscritura->eliminar();
 
     unlink(semaforoAmarresFile);
-    unlink(semaforoGruasLibresFile);
-    unlink(semaforoCamionesLibresFile);
-    unlink(semaforoBarcosLibresFile);
 
 
     //Locks
@@ -265,14 +248,15 @@ void Controlador::notificarSalida() {
 
 struct trabajo Controlador::asignarTrabajoAGrua(){
 
-    //TODO:Pedir lock de lectura de trabajos
-
-    //Avisar que hay una grua libre para trabajar
-    //this->semaforoGruasLibres->v();
+    //Pido el lock de lectura de trabajos para las gruas
+    this->lecturaTrabajosAGruas->tomarLock();
 
     struct trabajo trabajo;
     int res = this->tareasAGruaLectura->leer(&trabajo,sizeof(trabajo));
     //if(res <= 0) Logger::getInstance()->log("Leyendo en tareasAGruaGrua",1);
+
+    //Luego de leer el trabajo hay que liberar el lock para que otras gruas puedan leer.
+    this->lecturaTrabajosAGruas->liberarLock();
 
     return trabajo;
 
@@ -295,8 +279,8 @@ void Controlador::descargarGrua(struct trabajo trabajo, pid_t pidTransporte){
     //Escribo la carga
     int res = this->cargaEscritura->escribir(&trabajo,sizeof(trabajo));
     //if(res <= 0) Logger::getInstance()->log("Escribiendo cargaEscrituraGrua",1);
+    this->cargaEscritura->cerrar();
 
-    //TODO:DESTRUIR EL FIFO PARA QUE NO QUEDE ABIERTO, HAY QUE SABER QUE YA FUE LEIDO.
 
 
 }
@@ -395,12 +379,19 @@ struct trabajo Controlador::darCargaACamion() {
 
     //Hay que leer del fifo de cargas
     int res = this->cargaLectura->leer(&trabajo,sizeof(trabajo));
+    //if(res <= 0) Logger::getInstance()->log("Leyendo cargaCamion",1);
+
     if (res <= 0) {
         std::string err = strerror(errno);
         Logger::getInstance()->log("Error leyendo carga para el camion!" + err);
     }
 
     this->cargaLectura->cerrar();
+
+    //Hay que eliminar el fifo para que el archivo no quede abierto
+    this->cargaLectura->eliminar();
+
+
 
     return trabajo;
 }

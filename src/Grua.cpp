@@ -24,10 +24,9 @@ void Grua::run(Controlador* controlador){
 
     Logger::getInstance()->log("[GRUA] Tome la carga del " + transporte + ": " + std::to_string(trabajo.proceso) + ", tenia carga de: " + std::to_string(trabajo.carga));
 
-    pid_t pidTransporte = controlador->tomarTransporteVacio(trabajo.tipoTrabajo - 1);
+    pid_t pidTransporte = controlador->tomarTransporteVacio(1 - trabajo.tipoTrabajo);
 
     Logger::getInstance()->log("[GRUA] Tengo asignado a: " + std::to_string(pidTransporte) + " para cargarlo");
 
     controlador->descargarGrua(trabajo,pidTransporte);
-
 }

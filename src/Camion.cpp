@@ -80,12 +80,15 @@ int Camion::pedirDescarga(Controlador* controlador){
 
 int Camion::realizarEnvio(Controlador* controlador){
 
-    srand(time(NULL));
-    int vieneConCarga = rand() % 2;
-    //if(vieneConCarga) {
-    //    this->carga = rand() % 1000;
-    //}
-
     this->carga = 0;
+
+    if(!(getpid() % 2)) { //Si el pid del camion es par, vuelve con carga
+        struct timeval tv;
+        gettimeofday(&tv,NULL);
+        srand(tv.tv_usec);
+        this->carga = rand() % 1000;
+    }
+
+
 
 }

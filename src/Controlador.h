@@ -20,9 +20,6 @@
 #include "SharedMemory.h"
 
 static const char* const semaforoAmarresFile = "/tmp/semaforoAmarres.tmp";
-static const char* const semaforoGruasLibresFile = "/tmp/semaforoGruasLibres.tmp";
-static const char* const semaforoCamionesLibresFile = "/tmp/semaforoCamionesLibres.tmp";
-static const char* const semaforoBarcosLibresFile = "/tmp/semaforoBarcosLibres.tmp";
 static const char* const lockLecturaCargasABarcosFile = "/tmp/lockLecturaCargasABarcos.tmp";
 static const char* const lockLecturaCargasACamionesFile = "/tmp/lockLecturaCargasACamiones.tmp";
 static const char* const lockLecturaTrabajosAGruasFile = "/tmp/lockLecturaTrabajosAGruas.tmp";
@@ -55,14 +52,13 @@ class Controlador {
 
     private:
         Semaforo* semaforoAmarres;
-        Semaforo* semaforoGruasLibres;
-        Semaforo* semaforoCamionesLibres;
-        Semaforo* semaforoBarcosLibres;
+
         LockFile* entrada;
         LockFile* salida;
         LockFile* lecturaCargasABarcos;
         LockFile* lecturaCargasACamiones;
         LockFile* lecturaTrabajosAGruas;
+
         FifoLectura* tareasAGruaLectura;
         FifoEscritura* tareasAGruaEscritura;
         FifoEscritura* barcosVaciosEscritura;

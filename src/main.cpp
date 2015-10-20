@@ -14,12 +14,6 @@
 #include "Grua.h"
 #include "Administrador.h"
 
-static int cantidadBarcos = 1;
-static int cantidadAmarres = 1;
-static int cantidadGruas = 1;
-static int cantidadCamiones = 1;
-static int cantidadProcesosHijos = cantidadBarcos + cantidadGruas + cantidadCamiones + 1;// + 1 = Administrador
-
 void esperarHijos(std::string nombre, std::vector<pid_t> hijos) {
     std::vector<pid_t>::iterator it = hijos.begin();
     for (;it != hijos.end(); it++) {
@@ -39,7 +33,16 @@ void terminarHijos(std::string nombre, std::vector<pid_t> hijos) {
 }
 
 int main(){
+    Logger::getInstance()->log("\n\n\n*************NEW RUN*************");
     Logger::getInstance()->log("Soy el master y estoy empezando la joda");
+
+    //Valores por default
+    int cantidadBarcos = C::barcos;
+    int cantidadAmarres = C::lugares;
+    int cantidadGruas = C::gruas;
+    int cantidadCamiones = C::camiones;
+
+    int cantidadProcesosHijos = cantidadBarcos + cantidadGruas + cantidadCamiones + 1;// + 1 = Administrador
 
     std::vector<pid_t> barcos;
     std::vector<pid_t> gruas;
@@ -75,12 +78,33 @@ int main(){
     Logger::getInstance()->log("Soy el master y voy a terminar a los camiones");
     terminarHijos("CAMION", camiones);
 
+    for (int i = 0; i < cantidadBarcos; i++) {
+        Barco barco;
+        barco.start(controlador);
+    }
+
+    for (int i = 0; i < cantidadGruas; i++) {
+        Grua grua;
+        grua.start(controlador);
+    }
+
+    for (int i = 0; i < cantidadCamiones; i++) {
+        Camion camion;
+        camion.start(controlador);
+    }
+
+    //Administrador admin;
+    //admin.start(controlador);
+
+    for (int i = 0; i < cantidadProcesosHijos - 1; i++) {
+        wait(NULL);
+    }
+
     controlador->destruir();
     delete controlador;
 
     Logger::getInstance()->log("Soy el master y termine");
-    Logger::destroy();
 
-    std::cout << C::barcos;
+    Logger::destroy();
     return 0;
 }
