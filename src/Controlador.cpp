@@ -277,6 +277,7 @@ void Controlador::descargarGrua(struct trabajo trabajo, pid_t pidTransporte){
     //Escribo la carga
     int res = this->cargaEscritura->escribir(&trabajo,sizeof(trabajo));
     //if(res <= 0) Logger::getInstance()->log("Escribiendo cargaEscrituraGrua",1);
+    this->cargaEscritura->cerrar();
 
     //TODO:DESTRUIR EL FIFO PARA QUE NO QUEDE ABIERTO, HAY QUE SABER QUE YA FUE LEIDO.
 
@@ -370,6 +371,10 @@ struct trabajo Controlador::darCargaACamion() {
     //Hay que leer del fifo de cargas
     int res = this->cargaLectura->leer(&trabajo,sizeof(trabajo));
     //if(res <= 0) Logger::getInstance()->log("Leyendo cargaCamion",1);
+
+    //Hay que eliminar el fifo para que el archivo no quede abierto
+    this->cargaLectura->eliminar();
+
     perror(NULL);
 
     return trabajo;
