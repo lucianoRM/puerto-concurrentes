@@ -18,6 +18,7 @@
 #include <errno.h>
 #include <string>
 #include "SharedMemory.h"
+#include "EndProcessException.h"
 
 static const char* const semaforoAmarresFile = "/tmp/semaforoAmarres.tmp";
 static const char* const lockLecturaCargasABarcosFile = "/tmp/lockLecturaCargasABarcos.tmp";
