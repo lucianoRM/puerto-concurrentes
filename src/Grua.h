@@ -15,8 +15,6 @@ class Grua :public Process{
     public:
         void initialize(Controlador* controlador);
         void run(Controlador* controlador);
-        void pedirTrabajo(Controlador* controlador);
-        void moverCarga(Controlador* controlador);
 };
 
 
