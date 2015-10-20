@@ -2,6 +2,7 @@
 // Created by luciano on 10/10/15.
 //
 
+#include <sys/time.h>
 #include "Barco.h"
 
 Barco::Barco(){
@@ -53,7 +54,10 @@ struct trabajo Barco::getTrabajo(){
 
 
 void Barco::generarCarga(){
-    srand(getpid());
+
+    struct timeval tv;
+    gettimeofday(&tv,NULL);
+    srand(tv.tv_usec);
     this->carga = rand() % 1000;
     std::cout << this->carga << std::endl;
 

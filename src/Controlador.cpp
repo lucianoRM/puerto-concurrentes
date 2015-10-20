@@ -407,7 +407,7 @@ struct trabajo Controlador::darCargaACamion() {
 
     //Hay que eliminar el fifo para que el archivo no quede abierto
     this->cargaLectura->eliminar();
-    
+
 
 
     return trabajo;
