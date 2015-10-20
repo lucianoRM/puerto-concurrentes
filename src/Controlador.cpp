@@ -400,8 +400,9 @@ struct trabajo Controlador::darCargaACamion() {
         Logger::getInstance()->log("Error leyendo carga para el camion!" + err);
     }
 
-    return trabajo;
+    this->cargaLectura->cerrar();
 
+    return trabajo;
 }
 
 

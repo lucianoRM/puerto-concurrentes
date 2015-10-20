@@ -51,13 +51,10 @@ void Camion::run(Controlador* controlador) {
     this->enlistarseParaEnvio(controlador);
     this->realizarEnvio(controlador);
     Logger::getInstance()->log("[CAMION] Envio realizado");
-
-    this->shouldRun = false;
 }
 
 
 void Camion::enlistarseParaEnvio(Controlador* controlador){
-
 
     controlador->agregarCamionAFlota(getpid());
     Logger::getInstance()->log("[CAMION] Esperando para recibir carga...");
@@ -86,8 +83,10 @@ void Camion::realizarEnvio(Controlador* controlador){
 
     srand(time(NULL));
     int vieneConCarga = rand() % 2;
-    if(vieneConCarga)
-        this->carga = rand() % 1000;
+    //if(vieneConCarga) {
+    //    this->carga = rand() % 1000;
+    //}
 
+    this->carga = 0;
 
 }

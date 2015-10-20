@@ -9,8 +9,8 @@ Fifo::~Fifo() {
 }
 
 void Fifo::cerrar() {
-	close ( fd );
 	fd = -1;
+	close ( fd );
 }
 
 void Fifo::eliminar() const {
