@@ -32,17 +32,23 @@ std::string Logger::getFormattedTime() {
     std::time(&rawtime);
     timeinfo = std::localtime(&rawtime);
 
+    struct timeval tv;
+    gettimeofday(&tv,NULL);
+    unsigned long time_in_micros =  tv.tv_usec;
+
     std::strftime(buffer,80,"%Y%m%d %H:%M:%S:%m",timeinfo);
 
-    return std::string(buffer);
+    return std::string(buffer) + "]\n[" + std::to_string(time_in_micros);
 }
 
 void Logger::log(std::string message) {
 
-    std::string time = getFormattedTime();
+
 
 
     int tomarLockRes = logFile.tomarLock();
+
+    std::string time = getFormattedTime();
 
     std::stringstream ss;
 
