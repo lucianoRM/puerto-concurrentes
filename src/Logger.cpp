@@ -32,7 +32,7 @@ std::string Logger::getFormattedTime() {
     std::time(&rawtime);
     timeinfo = std::localtime(&rawtime);
 
-    std::strftime(buffer,80,"%Y%m%d %H:%M:%S",timeinfo);
+    std::strftime(buffer,80,"%Y%m%d %H:%M:%S:%m",timeinfo);
 
     return std::string(buffer);
 }

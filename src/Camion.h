@@ -23,6 +23,7 @@ class Camion : public Process {
         Camion();
         ~Camion();
         void run(Controlador* controlador);
+        void initialize(Controlador* controlador);
         struct trabajo getTrabajo();
         void setCarga(int nuevaCarga);
         int getCarga();

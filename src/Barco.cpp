@@ -25,6 +25,14 @@ void Barco::amarrar(Controlador* controlador){
     Logger::getInstance()->log("[BARCO] Pague");
 }
 
+void Barco::partir(Controlador* controlador){
+    Logger::getInstance()->log("[BARCO] Voy a pedir para salir del puerto");
+    controlador->dejarSalirBarco();
+    Logger::getInstance()->log("[BARCO] Estoy saliendo");
+    controlador->notificarSalida();
+    Logger::getInstance()->log("[BARCO] Me fui del puerto");
+}
+
 
 struct trabajo Barco::getTrabajo(){
 
@@ -63,10 +71,12 @@ int Barco::getCarga(){
 
 }
 
+void Barco::initialize(Controlador* controlador) {
+    controlador->adaptarseABarco(); //Setea todos los metodos de concurrencia del controlador que corresponden al barco
+}
 
 void Barco::run(Controlador* controlador) {
 
-    controlador->adaptarseABarco(); //Setea todos los metodos de concurrencia del controlador que corresponden al barco
     this->amarrar(controlador); //Permite que el barco amarre. Tiene en cuenta la cantidad de amarres libres y que entren de a uno por vez.
     struct trabajo trabajo = this->getTrabajo();
 
@@ -75,5 +85,7 @@ void Barco::run(Controlador* controlador) {
     controlador->bloquearHastaTerminar(); //bloquea el barco hasta que el camion se cargue.
     //controlador->agregarBarcoAFlota(getpid());
 
+    this->partir(controlador);
 
+    this->shouldRun = false;
 }

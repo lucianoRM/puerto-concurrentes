@@ -21,7 +21,7 @@ Controlador::Controlador(int cantidadAmarres) {
     result+=mknod(lockLecturaCargasACamionesFile,S_IFREG|0777,0);
     result+=mknod(lockLecturaTrabajosAGruasFile,S_IFREG|0777,0);
     result+=mknod(lockEntradaFile,S_IFREG|0777,0);
-
+    result+=mknod(lockSalidaFile,S_IFREG|0777,0);
 
     if(result < 0) Logger::getInstance()->log("[CONTROLADOR] Error al crear archivos para metodos de concurrencia");
 
@@ -34,6 +34,7 @@ Controlador::Controlador(int cantidadAmarres) {
     this->lecturaCargasACamiones = new LockFile(lockLecturaCargasACamionesFile);
     this->lecturaTrabajosAGruas = new LockFile(lockLecturaTrabajosAGruasFile);
     this->entrada = new LockFile(lockEntradaFile);
+    this->salida = new LockFile(lockSalidaFile);
 
     this->tareasAGruaEscritura = new FifoEscritura(tareasAGruaFile);
     this->tareasAGruaLectura = new FifoLectura(tareasAGruaFile);
@@ -65,6 +66,7 @@ Controlador::~Controlador() {
 
 
     delete this->entrada;
+    delete this->salida;
     delete this->lecturaCargasABarcos;
     delete this->lecturaCargasACamiones;
     delete this->lecturaTrabajosAGruas;
@@ -129,7 +131,6 @@ void Controlador::destruir(){
     this->camionesVaciosLectura->eliminar();
     this->camionesVaciosEscritura->eliminar();
 
-
     unlink(semaforoAmarresFile);
     unlink(semaforoGruasLibresFile);
     unlink(semaforoCamionesLibresFile);
@@ -141,6 +142,7 @@ void Controlador::destruir(){
     unlink(lockLecturaCargasACamionesFile);
     unlink(lockLecturaTrabajosAGruasFile);
     unlink(lockEntradaFile);
+    unlink(lockSalidaFile);
 
     unlink(cajaFile);
 }
@@ -233,6 +235,22 @@ void Controlador::adaptarseABarco(){
 
 }
 
+void Controlador::dejarSalirBarco() {
+    this->salida->tomarLock();
+}
+
+void Controlador::notificarSalida() {
+    int res = this->salida->liberarLock();
+    if (res < 0) {
+        std::string err = strerror(errno);
+        Logger::getInstance()->log("Error libreando salida!" + err);
+    }
+    res = this->semaforoAmarres->v();
+    if (res < 0) {
+        std::string err = strerror(errno);
+        Logger::getInstance()->log("Error liberando amarre!" + err);
+    }
+}
 
 /*##################################################################################################
  * #################################################################################################
@@ -291,13 +309,18 @@ pid_t Controlador::tomarTransporteVacio(int transporte) {
     if(transporte == BARCO) {
         //Debo leer del fifo de los barcos vacios
         int res = this->barcosVaciosLectura->leer(&pidTransporte,sizeof(pidTransporte));
-        //if(res <= 0) Logger::getInstance()->log("Leyendo barcosVaciosGrua",1);
+        if (res <= 0) {
+            std::string err = strerror(errno);
+            Logger::getInstance()->log("Error leyendo de barcos vacios" + err);
+        }
     }else{
         //Logger::getInstance()->log("Grua,antes de leer camiones vacios",1);
         int res = this->camionesVaciosLectura->leer(&pidTransporte,sizeof(pidTransporte));
+        if (res <= 0) {
+            std::string err = strerror(errno);
+            Logger::getInstance()->log("Error leyendo de camiones vacios" + err);
+        }
         //Logger::getInstance()->log("Grua,despues de leer camiones vacios",1);
-        //if(res <= 0) Logger::getInstance()->log("Leyendo camionesVaciosGrua",1);
-        perror(NULL);
     }
 
 
@@ -339,7 +362,10 @@ void Controlador::atenderCamionCargado(struct trabajo trabajo){
 
     //Si hay gruas disponibles, debe escribir su trabajo a la cola de trabajos a gruas
     int res = this->tareasAGruaEscritura->escribir(&trabajo,sizeof(trabajo));
-    //if(res <= 0) Logger::getInstance()->log("Escribiendo tareasAGruaCamion",1);
+    if (res <= 0) {
+        std::string err = strerror(errno);
+        Logger::getInstance()->log("Error escribiendo trabajo para la grua (descargar camion)" + err);
+    }
     //no deberia ser capaz de continuar si no hay un barco vacio
     //this->semaforoBarcosLibres->p(); //Un barco libre hara el v().
 
@@ -372,13 +398,19 @@ struct trabajo Controlador::darCargaACamion() {
     int res = this->cargaLectura->leer(&trabajo,sizeof(trabajo));
     //if(res <= 0) Logger::getInstance()->log("Leyendo cargaCamion",1);
 
+    if (res <= 0) {
+        std::string err = strerror(errno);
+        Logger::getInstance()->log("Error leyendo carga para el camion!" + err);
+    }
+
+    this->cargaLectura->cerrar();
+
     //Hay que eliminar el fifo para que el archivo no quede abierto
     this->cargaLectura->eliminar();
+    
 
-    perror(NULL);
 
     return trabajo;
-
 }
 
 

@@ -27,6 +27,7 @@ static const char* const lockLecturaCargasABarcosFile = "/tmp/lockLecturaCargasA
 static const char* const lockLecturaCargasACamionesFile = "/tmp/lockLecturaCargasACamiones.tmp";
 static const char* const lockLecturaTrabajosAGruasFile = "/tmp/lockLecturaTrabajosAGruas.tmp";
 static const char* const lockEntradaFile = "/tmp/lockEntrada.tmp";
+static const char* const lockSalidaFile = "/tmp/lockSalida.tmp";
 static const char* const tareasAGruaFile = "/tmp/tareasAGrua.tmp";
 static const char* const camionesVaciosFile = "/tmp/camionesVacios.tmp";
 static const char* const barcosVaciosFile = "/tmp/barcosVacios.tmp";
@@ -58,6 +59,7 @@ class Controlador {
         Semaforo* semaforoCamionesLibres;
         Semaforo* semaforoBarcosLibres;
         LockFile* entrada;
+        LockFile* salida;
         LockFile* lecturaCargasABarcos;
         LockFile* lecturaCargasACamiones;
         LockFile* lecturaTrabajosAGruas;
@@ -95,6 +97,8 @@ class Controlador {
         void  agregarBarcoAFlota(pid_t barcoPid); //Agrega barco a la flota de barcos disponibles para envios
         struct trabajo darCargaABarco();
         void adaptarseABarco(); //Abre los fifos y pipes correspondientes del modo necesario
+        void dejarSalirBarco();
+        void notificarSalida();
 
         //Camiones
         void atenderCamionCargado(struct trabajo trabajo);

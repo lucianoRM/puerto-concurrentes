@@ -19,12 +19,14 @@ class Barco: public Process {
 
     private:
         void amarrar(Controlador* controlador);
-        void generarCarga(); //Devuelve un valor aleatorio para la carga del barco
+        void partir(Controlador* controlador);
+
+    void generarCarga(); //Devuelve un valor aleatorio para la carga del barco
 
     public:
         Barco();
         ~Barco();
-
+        void initialize(Controlador* controlador);
         void run(Controlador* controlador);
         struct trabajo getTrabajo();
         void setCarga(int nuevaCarga);

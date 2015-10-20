@@ -14,4 +14,6 @@ void Administrador::run(Controlador *c) {
         l->log("[ADMIN] Valor de la caja: " + s);
         sleep(3);
     }
+
+    this->shouldRun = false;
 }

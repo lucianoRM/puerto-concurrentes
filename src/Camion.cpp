@@ -4,16 +4,9 @@
 
 #include "Camion.h"
 
-Camion::Camion(){
-
-    carga = 0;
-
-}
-
+Camion::Camion():carga(0) {}
 
 Camion::~Camion(){}
-
-
 
 struct trabajo Camion::getTrabajo(){
 
@@ -44,27 +37,24 @@ int Camion::getCarga(){
 
 }
 
+void Camion::initialize(Controlador* controlador) {
+    controlador->adaptarseACamion();
+}
 
 void Camion::run(Controlador* controlador) {
-
-    controlador->adaptarseACamion();
-    while(true){
-        if(this->carga > 0){
-            Logger::getInstance()->log("[CAMION] Tengo carga de: " + std::to_string(this->carga) + ", pido que me descarguen");
-            this->pedirDescarga(controlador);
-            Logger::getInstance()->log("[CAMION] Me descargaron.");
-        }
-        Logger::getInstance()->log("[CAMION] Me voy a enlistar para envio");
-        this->enlistarseParaEnvio(controlador);
-        this->realizarEnvio(controlador);
-        Logger::getInstance()->log("[CAMION] Envio realizado");
+    if(this->carga > 0){
+        Logger::getInstance()->log("[CAMION] Tengo carga de: " + std::to_string(this->carga) + ", pido que me descarguen");
+        this->pedirDescarga(controlador);
+        Logger::getInstance()->log("[CAMION] Me descargaron.");
     }
-
+    Logger::getInstance()->log("[CAMION] Me voy a enlistar para envio");
+    this->enlistarseParaEnvio(controlador);
+    this->realizarEnvio(controlador);
+    Logger::getInstance()->log("[CAMION] Envio realizado");
 }
 
 
 void Camion::enlistarseParaEnvio(Controlador* controlador){
-
 
     controlador->agregarCamionAFlota(getpid());
     Logger::getInstance()->log("[CAMION] Esperando para recibir carga...");
@@ -93,8 +83,10 @@ void Camion::realizarEnvio(Controlador* controlador){
 
     srand(time(NULL));
     int vieneConCarga = rand() % 2;
-    if(vieneConCarga)
-        this->carga = rand() % 1000;
+    //if(vieneConCarga) {
+    //    this->carga = rand() % 1000;
+    //}
 
+    this->carga = 0;
 
 }
