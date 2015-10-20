@@ -201,6 +201,7 @@ void Controlador::agregarBarcoAFlota(pid_t barcoPid){
 struct trabajo Controlador::darCargaABarco(){
 
     struct trabajo trabajo;
+
     //Hay que quedarse esperando a que alguien escriba en el fifo de cargas para el barco.
     int res = this->cargaLectura->leer(&trabajo,sizeof(trabajo));
     //if(res <= 0) Logger::getInstance()->log("Leyendo de cargaLecturaBarco",1);

@@ -88,6 +88,9 @@ void Barco::run(Controlador* controlador) {
 
     if(!(getpid() % 2)) { //Si el pid del barco es par, se queda esperando una carga,sino se va vacio
         controlador->agregarBarcoAFlota(getpid());
+        struct trabajo trabajo = controlador->darCargaABarco();
+        Logger::getInstance()->log("[BARCO] Me cargaron con una carga de: " + std::to_string(trabajo.carga) + " del camion: " + std::to_string(trabajo.proceso));
+        this->carga = trabajo.carga;
     }
     this->partir(controlador);
 
