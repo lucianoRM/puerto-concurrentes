@@ -71,15 +71,16 @@ int main(){
 
     //Administrador admin;
     //admin.start(controlador);
-    Logger::getInstance()->log("Soy el master y estoy esperando a los barcos");
+    std::vector<pid_t> hijos;
+    hijos.insert(hijos.end(), barcos.begin(), barcos.end());
+    hijos.insert(hijos.end(), gruas.begin(), gruas.end());
+    hijos.insert(hijos.end(), camiones.begin(), camiones.end());
+
     esperarHijos("BARCO", barcos);
 
-    Logger::getInstance()->log("Soy el master y voy a terminar a los camiones");
     esperarHijos("CAMION", camiones);
 
-    Logger::getInstance()->log("Soy el master y voy a terminar a las gruas");
     terminarHijos("GRUA", gruas);
-
 
 
     controlador->destruir();

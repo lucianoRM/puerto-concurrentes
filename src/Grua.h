@@ -13,6 +13,7 @@ class Grua :public Process{
     private:
         struct trabajo trabajo;
     public:
+        Grua():Process("GRUA"){};
         void initialize(Controlador* controlador);
         void run(Controlador* controlador);
 };

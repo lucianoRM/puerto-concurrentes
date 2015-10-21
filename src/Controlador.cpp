@@ -205,7 +205,7 @@ void Controlador::atenderBarcoAmarrado(struct trabajo trabajo){
 
     //Si hay gruas disponibles, debe escribir su trabajo a la cola de trabajos a gruas
     int res = this->tareasAGruaEscritura->escribir(&trabajo,sizeof(trabajo));
-    if (res != 0) {
+    if (res <= 0) {
         std::string err = strerror(errno);
         Logger::getInstance()->log("Error al escribir en tareas a grua " + err);
         EndProcessException e;
@@ -224,7 +224,7 @@ void Controlador::atenderBarcoAmarrado(struct trabajo trabajo){
 void Controlador::agregarBarcoAFlota(pid_t barcoPid){
 
     int res = this->barcosVaciosEscritura->escribir(&barcoPid,sizeof(barcoPid));
-    if (res < 0) {
+    if (res <= 0) {
         std::string err = strerror(errno);
         Logger::getInstance()->log("Error al escribir en barcos vacios " + err);
         EndProcessException e;

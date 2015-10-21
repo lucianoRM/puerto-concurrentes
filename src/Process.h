@@ -12,16 +12,20 @@
 #include "SignalHandler.h"
 #include "SIGINT_Handler.h"
 #include "EndProcessException.h"
-
+#include "Logger.h"
 
 class Process {
+private:
+    std::string name;
+    void log(std::string msg);
+
 protected:
     bool shouldRun;
     virtual void initialize(Controlador* controlador) = 0;
     void destroy(Controlador* controlador);
 
 public:
-    Process();
+    Process(std::string name);
     ~Process();
     pid_t start(Controlador* controlador);
     virtual void run(Controlador* controlador) = 0;

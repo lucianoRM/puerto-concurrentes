@@ -4,16 +4,18 @@
 
 #include "Process.h"
 
-Process::Process():shouldRun(true) {}
-
-
+Process::Process(std::string n):shouldRun(true) {
+    this->name = n;
+}
 
 void Process::destroy(Controlador *controlador) {
 
     controlador->destruirControlesEspecificos();
 }
 
-
+void Process::log(std::string msg) {
+    Logger::getInstance()->log("["+this->name+"] " + msg);
+}
 
 pid_t Process::start(Controlador* controlador) {
     pid_t pid = fork();
@@ -36,9 +38,13 @@ pid_t Process::start(Controlador* controlador) {
                     this->run(controlador);
             } catch (std::exception& e) {
                 Logger::getInstance()->log(e.what());
-                shouldRun=false;
+                if (!sigint_handler.getGracefulQuit()) {
+                    shouldRun = false;
+                }
             }
         }
+
+        this->destroy(controlador);
 
         SignalHandler :: destruir ();
 

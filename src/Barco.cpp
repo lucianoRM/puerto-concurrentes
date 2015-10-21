@@ -5,7 +5,7 @@
 #include <sys/time.h>
 #include "Barco.h"
 
-Barco::Barco(){
+Barco::Barco():Process("BARCO") {
 
     generarCarga();
 

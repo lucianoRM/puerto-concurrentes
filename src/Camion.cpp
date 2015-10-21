@@ -4,7 +4,7 @@
 
 #include "Camion.h"
 
-Camion::Camion():carga(0) {}
+Camion::Camion():Process("CAMION"), carga(0) {}
 
 Camion::~Camion(){}
 
