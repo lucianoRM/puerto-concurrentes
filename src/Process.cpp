@@ -35,7 +35,7 @@ pid_t Process::start(Controlador* controlador) {
         // mientras no se reciba la senial SIGINT, el proceso realiza su trabajo
         while (shouldRun && sigint_handler.getGracefulQuit() == 0 ) {
             try {
-                    this->run(controlador);
+                this->run(controlador);
             } catch (std::exception& e) {
                 Logger::getInstance()->log(e.what());
                 if (!sigint_handler.getGracefulQuit()) {

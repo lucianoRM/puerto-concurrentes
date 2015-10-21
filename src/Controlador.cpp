@@ -46,6 +46,7 @@ Controlador::Controlador(int cantidadAmarres) {
 
     this->smCaja = new SharedMemory<float>(cajaFile, 'C');
     smCaja->escribir(0);
+
 }
 
 
@@ -85,7 +86,13 @@ void Controlador::bloquearHastaTerminar() {
 
     std::string path = "/tmp/" + std::to_string(getpid()) + ".tmp"; //No deberia haber problemas pero agrego .tmp para diferenciarlo de los fifos creados para cargas que tambien se generan a partir del pid.
     this->esperarTrabajoTerminado = new FifoEscritura(path);
-    this->esperarTrabajoTerminado->abrir();
+    int res = this->esperarTrabajoTerminado->abrir();
+    if (res <= 0) {
+        std::string err = strerror(errno);
+        Logger::getInstance()->log("Error al abrir fifo de coordinacion " + err);
+        EndProcessException e;
+        throw e;
+    }
     //Aca se va a bloquear hasta que se abra del otro lado. Cuando se desbloquee ya no va a ser necesario el fifo
     this->esperarTrabajoTerminado->cerrar();
     this->esperarTrabajoTerminado->eliminar();
@@ -100,7 +107,13 @@ void Controlador::notificarTransferenciaCompleta(pid_t pidFuenteDeCarga) {
 
     std::string path = "/tmp/" + std::to_string(pidFuenteDeCarga) + ".tmp";
     this->avisarTrabajoTerminado = new FifoLectura(path);
-    this->avisarTrabajoTerminado->abrir();
+    int res = this->avisarTrabajoTerminado->abrir();
+    if (res <= 0) {
+        std::string err = strerror(errno);
+        Logger::getInstance()->log("Error al abrir fifo de coordinacion " + err);
+        EndProcessException e;
+        throw e;
+    }
     //Se va a bloquear hasta que se abra el fifo del otro lado.Cuando se desbloque ya no va a ser necesario
     this->avisarTrabajoTerminado->cerrar();
     this->avisarTrabajoTerminado->eliminar();
@@ -131,8 +144,7 @@ void Controlador::destruir(){
     unlink(lockLecturaTrabajosAGruasFile);
     unlink(lockEntradaFile);
     unlink(lockSalidaFile);
-
-    this->smCaja->destruir();
+    
     unlink(cajaFile);
 }
 
@@ -234,7 +246,13 @@ void Controlador::agregarBarcoAFlota(pid_t barcoPid){
     //Primero hay que abrir un fifo para que pueda recibir la carga
     std::string path = "/tmp/" + std::to_string(barcoPid);
     cargaLectura = new FifoLectura(path);
-    cargaLectura->abrir();
+    res = cargaLectura->abrir();
+    if (res <= 0) {
+        std::string err = strerror(errno);
+        Logger::getInstance()->log("Error al escribir fifo de cargas a barco " + err);
+        EndProcessException e;
+        throw e;
+    }
 
 }
 
@@ -257,8 +275,20 @@ struct trabajo Controlador::darCargaABarco(){
 void Controlador::adaptarseABarco(){
 
     //TODO:CHECKEAR EL ORDEN
-    this->tareasAGruaEscritura->abrir();
-    this->barcosVaciosEscritura->abrir();
+    int res = this->tareasAGruaEscritura->abrir();
+    if (res <= 0) {
+        std::string err = strerror(errno);
+        Logger::getInstance()->log("Error al abrir fifo de escritura de tareas a grua desde barco " + err);
+        EndProcessException e;
+        throw e;
+    }
+    res = this->barcosVaciosEscritura->abrir();
+    if (res <= 0) {
+        std::string err = strerror(errno);
+        Logger::getInstance()->log("Error al abrir fifo de escritura de barcos vacios " + err);
+        EndProcessException e;
+        throw e;
+    }
 
 
 }
@@ -346,11 +376,17 @@ void Controlador::descargarGrua(struct trabajo trabajo, pid_t pidTransporte){
 
     //Abro el fifo
     //Logger::getInstance()->log("Grua, antes de abrir carga",1);
-    this->cargaEscritura->abrir();
+    int res = this->cargaEscritura->abrir();
+    if (res <= 0) {
+        std::string err = strerror(errno);
+        Logger::getInstance()->log("Error al abrir fifo de carga desde grua " + err);
+        EndProcessException e;
+        throw e;
+    }
     //Logger::getInstance()->log("Grua, despues de abrir carga",1);
 
     //Escribo la carga
-    int res = this->cargaEscritura->escribir(&trabajo,sizeof(trabajo));
+    res = this->cargaEscritura->escribir(&trabajo,sizeof(trabajo));
     if (res < 0) {
         std::string err = strerror(errno);
         Logger::getInstance()->log("Error escribiendo en carga escritura " + err);
@@ -394,9 +430,27 @@ void Controlador::adaptarseAGrua() {
 
 
     //TODO:CHECKEAR EL ORDEN
-    this->tareasAGruaLectura->abrir();
-    this->barcosVaciosLectura->abrir();
-    this->camionesVaciosLectura->abrir();
+    int res = this->tareasAGruaLectura->abrir();
+    if (res <= 0) {
+        std::string err = strerror(errno);
+        Logger::getInstance()->log("Error al abrir fifo de lectura de tareas a grua " + err);
+        EndProcessException e;
+        throw e;
+    }
+    res = this->barcosVaciosLectura->abrir();
+    if (res <= 0) {
+        std::string err = strerror(errno);
+        Logger::getInstance()->log("Error al abrir fifo de lectura de barcos vacios " + err);
+        EndProcessException e;
+        throw e;
+    }
+    res = this->camionesVaciosLectura->abrir();
+    if (res <= 0) {
+        std::string err = strerror(errno);
+        Logger::getInstance()->log("Error al abrir fifo de lectura de camiones vacios " + err);
+        EndProcessException e;
+        throw e;
+    }
 
 }
 
@@ -449,7 +503,13 @@ void Controlador::agregarCamionAFlota(pid_t camionPid){
     this->cargaLectura = new FifoLectura(path);
 
     //Logger::getInstance()->log("Camion, antes de abrir carga",1);
-    this->cargaLectura->abrir();
+    res = this->cargaLectura->abrir();
+    if (res <= 0) {
+        std::string err = strerror(errno);
+        Logger::getInstance()->log("Error al abrir fifo de carga a camion " + err);
+        EndProcessException e;
+        throw e;
+    }
     //Logger::getInstance()->log("Camion, despues de abrir carga",1);
 }
 
@@ -478,8 +538,20 @@ struct trabajo Controlador::darCargaACamion() {
 void Controlador::adaptarseACamion() {
 
     //TODO:CHECKEAR EL ORDEN
-    this->tareasAGruaEscritura->abrir();
-    this->camionesVaciosEscritura->abrir();
+    int res = this->tareasAGruaEscritura->abrir();
+    if (res <= 0) {
+        std::string err = strerror(errno);
+        Logger::getInstance()->log("Error al abrir fifo de tareas a grua del camion " + err);
+        EndProcessException e;
+        throw e;
+    }
+    res = this->camionesVaciosEscritura->abrir();
+    if (res <= 0) {
+        std::string err = strerror(errno);
+        Logger::getInstance()->log("Error al abrir fifo de escritura de camiones vacios " + err);
+        EndProcessException e;
+        throw e;
+    }
 
 }
 
