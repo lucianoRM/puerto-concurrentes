@@ -13,8 +13,10 @@
 #include "Camion.h"
 #include "Grua.h"
 #include "Administrador.h"
+#include "Main.h"
+#include "SIGINT_Handler_main.h"
 
-void esperarHijos(std::string nombre, std::vector<pid_t> hijos) {
+    void esperarHijos(std::string nombre, std::vector<pid_t> hijos) {
     std::vector<pid_t>::iterator it = hijos.begin();
     for (;it != hijos.end(); it++) {
         pid_t pid = *it;
@@ -50,6 +52,13 @@ int main(){
     std::vector<pid_t> gruas;
     std::vector<pid_t> camiones;
 
+    std::vector<pid_t> hijos;
+    // event handler para la senial SIGINT (-2)
+    SIGINT_Handler_main sigint_handler(hijos);
+
+    // se registra el event handler declarado antes
+    SignalHandler :: getInstance()->registrarHandler ( SIGINT,&sigint_handler );
+
     Controlador* controlador = new Controlador(cantidadAmarres);
     for(int i = 0;i < cantidadBarcos ;i++) {
         Barco barco;
@@ -71,10 +80,10 @@ int main(){
 
     //Administrador admin;
     //admin.start(controlador);
-    std::vector<pid_t> hijos;
     hijos.insert(hijos.end(), barcos.begin(), barcos.end());
     hijos.insert(hijos.end(), gruas.begin(), gruas.end());
     hijos.insert(hijos.end(), camiones.begin(), camiones.end());
+
 
     esperarHijos("BARCO", barcos);
 
@@ -89,5 +98,15 @@ int main(){
     Logger::getInstance()->log("Soy el master y termine");
 
     Logger::destroy();
+    return 0;
+}
+
+int main2() {
+    Logger::getInstance()->log("\n\n\n*************NEW RUN*************");
+    Logger::getInstance()->log("Soy el master y estoy empezando la joda");
+
+    Main main;
+
+    main.start(NULL);
     return 0;
 }

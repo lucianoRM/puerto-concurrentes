@@ -6,6 +6,7 @@
 
 #include "EventHandler.h"
 #include "Logger.h"
+#include <vector>
 
 class SIGINT_Handler_main : public EventHandler {
 
