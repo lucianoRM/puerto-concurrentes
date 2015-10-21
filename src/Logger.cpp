@@ -58,7 +58,8 @@ void Logger::log(std::string message) {
 
     if (tomarLockRes != 0) {
         std::cerr << "Error al tomar el lock del log: " << fileName << ". Mensaje que iba a escribir: " << log_msg << std::endl;
-        return;
+        EndProcessException e;
+        throw e;
     }
 
     int res = logFile.escribir(log_msg.c_str(), log_msg.length());

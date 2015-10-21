@@ -92,6 +92,7 @@ int main(){
     terminarHijos("GRUA", gruas);
 
 
+
     controlador->destruir();
     delete controlador;
 

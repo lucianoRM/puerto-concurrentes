@@ -11,10 +11,10 @@
 #include <string>
 #include <sstream>
 #include <ctime>
-
-
 #include "LockFile.h"
 #include <sys/time.h>
+#include "EndProcessException.h"
+
 
 class Logger {
 public:
