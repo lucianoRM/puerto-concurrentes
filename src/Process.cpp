@@ -44,6 +44,7 @@ pid_t Process::start(Controlador* controlador) {
             }
         }
 
+
         this->destroy(controlador);
 
         SignalHandler :: destruir ();
@@ -53,6 +54,7 @@ pid_t Process::start(Controlador* controlador) {
         } else {
             Logger::getInstance()->log("Se recibio la senial SIGINT, el proceso termina");
         }
+
 
         delete controlador;
         Logger::destroy();

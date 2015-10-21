@@ -37,12 +37,16 @@ template<class T> void SharedMemory<T>::escribir(const T &dato) {
 
 template<class T> T SharedMemory<T>::leer() const {
 	T dato;
-	if (lockFile->tomarLock() == 0) {
-		dato = leerInseguro();
-		lockFile->liberarLock();
-	} else {
-		// TODO: Loggear error
+	int res = this->lockFile->tomarLock();
+	if (res <= 0 ) {
+		std::string err = strerror(errno);
+		Logger::getInstance()->log("Error al tomar el lock de la caja " + err);
+		EndProcessException e;
+		throw e;
 	}
+	dato = leerInseguro();
+	this->lockFile->liberarLock();
+
 	return dato;
 }
 

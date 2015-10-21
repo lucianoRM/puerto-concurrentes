@@ -92,13 +92,16 @@ int main(){
     terminarHijos("GRUA", gruas);
 
 
-
     controlador->destruir();
+
     delete controlador;
+
 
     Logger::getInstance()->log("Soy el master y termine");
 
+
     Logger::destroy();
+
     return 0;
 }
 
