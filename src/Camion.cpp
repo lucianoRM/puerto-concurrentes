@@ -64,14 +64,14 @@ void Camion::enlistarseParaEnvio(Controlador* controlador){
 
     //Hay que avisar al barco que ya termino la descarga
     controlador->notificarTransferenciaCompleta(trabajo.proceso);
-    Logger::getInstance()->log("[CAMION] Fui cargado con una carga de: " + std::to_string(trabajo.carga) + " de barco: " + std::to_string(trabajo.proceso));
+    Logger::getInstance()->log("[CAMION] Fui cargado con una carga de: " + std::to_string(trabajo.carga) + " de BARCO: " + std::to_string(trabajo.proceso));
 
 }
 
 void Camion::pedirDescarga(Controlador* controlador){
 
     struct trabajo trabajo = this->getTrabajo();
-    Logger::getInstance()->log("[CAMION] Estoy cargado con una carga de: " + std::to_string(trabajo.carga) + " ,pido que me descarguen");
+    Logger::getInstance()->log("[CAMION] Estoy cargado con una carga de: " + std::to_string(trabajo.carga) + ", pido que me descarguen");
     controlador->atenderCamionCargado(trabajo);
     this->log("Encole mi carga en la cola de trabajos a grua");
     controlador->bloquearHastaTerminar();
