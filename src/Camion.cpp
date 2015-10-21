@@ -73,7 +73,7 @@ int Camion::pedirDescarga(Controlador* controlador){
     struct trabajo trabajo = this->getTrabajo();
     Logger::getInstance()->log("[CAMION] Estoy cargado con una carga de: " + std::to_string(trabajo.carga) + " ,pido que me descarguen");
     controlador->atenderCamionCargado(trabajo);
-
+    this->log("Encole mi carga en la cola de trabajos a grua");
     controlador->bloquearHastaTerminar();
 
 }

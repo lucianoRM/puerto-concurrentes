@@ -23,6 +23,7 @@ class SIGINT_Handler_main : public EventHandler {
 
 		virtual int handleSignal ( int signum ) {
 			assert ( signum == SIGINT );
+			Logger::getInstance()->log("ME LLEGO LA SEÑAL PARA MORIR");
 			std::vector<pid_t>::iterator it = this->children.begin();
 			for (;it != this->children.end(); it++) {
 				pid_t pid = *it;

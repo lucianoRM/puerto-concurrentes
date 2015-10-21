@@ -17,9 +17,9 @@
 class Process {
 private:
     std::string name;
-    void log(std::string msg);
 
 protected:
+    void log(std::string msg);
     bool shouldRun;
     virtual void initialize(Controlador* controlador) = 0;
     void destroy(Controlador* controlador);
