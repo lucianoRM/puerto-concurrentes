@@ -9,6 +9,7 @@ public:
 	SharedMemory(const std::string &archivo, const char letra);
 	~SharedMemory();
 	void escribir(const T &dato);
+	void destruir();
 	T leer() const;
 private:
 	MemoriaCompartida2<T> *buffer = NULL;
@@ -53,8 +54,12 @@ template<class T> SharedMemory<T>::SharedMemory(const std::string &archivo,
 }
 
 template<class T> SharedMemory<T>::~SharedMemory() {
-	delete buffer;
-	delete lockFile;
 }
+
+template<class T> void SharedMemory<T>::destruir() {
+	delete this->buffer;
+	delete this->lockFile;
+}
+
 
 #endif

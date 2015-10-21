@@ -132,6 +132,7 @@ void Controlador::destruir(){
     unlink(lockEntradaFile);
     unlink(lockSalidaFile);
 
+    this->smCaja->destruir();
     unlink(cajaFile);
 }
 

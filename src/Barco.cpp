@@ -14,7 +14,7 @@ Barco::Barco():Process("BARCO") {
 Barco::~Barco(){
 }
 
-int Barco::amarrar(Controlador* controlador){
+void Barco::amarrar(Controlador* controlador){
     Logger::getInstance()->log("[BARCO] Voy a pedir amarre y me quedo esperando que me dejen entrar");
     controlador->cederAmarre();
     Logger::getInstance()->log("[BARCO] Tengo amarre, voy a entrar");
@@ -28,7 +28,7 @@ int Barco::amarrar(Controlador* controlador){
 
 
 
-int Barco::partir(Controlador* controlador){
+void Barco::partir(Controlador* controlador){
     Logger::getInstance()->log("[BARCO] Voy a pedir para salir del puerto");
     controlador->dejarSalirBarco();
     Logger::getInstance()->log("[BARCO] Estoy saliendo");

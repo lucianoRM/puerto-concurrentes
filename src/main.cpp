@@ -46,7 +46,7 @@ int main(){
 
     Logger::getInstance()->log("[MAIN] Hay: " +std::to_string(cantidadBarcos) + " barcos, " + std::to_string(cantidadAmarres) + " amarres, " + std::to_string(cantidadCamiones) + " camiones y " + std::to_string(cantidadGruas) + " gruas");
 
-    int cantidadProcesosHijos = cantidadBarcos + cantidadGruas + cantidadCamiones + 1;// + 1 = Administrador
+    //int cantidadProcesosHijos = cantidadBarcos + cantidadGruas + cantidadCamiones + 1;// + 1 = Administrador
 
     std::vector<pid_t> barcos;
     std::vector<pid_t> gruas;
@@ -101,7 +101,7 @@ int main(){
     return 0;
 }
 
-int main2() {
+/*int main2() {
     Logger::getInstance()->log("\n\n\n*************NEW RUN*************");
     Logger::getInstance()->log("Soy el master y estoy empezando la joda");
 
@@ -110,3 +110,4 @@ int main2() {
     main.start(NULL);
     return 0;
 }
+*/

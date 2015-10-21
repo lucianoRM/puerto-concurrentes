@@ -14,9 +14,9 @@ class Camion : public Process {
         int carga;
 
     private:
-        int enlistarseParaEnvio(Controlador* controlador); //Cuando el camion esta vacio
-        int pedirDescarga(Controlador* controlador); //Cuando el camion esta lleno
-        int realizarEnvio(Controlador* controlador);
+        void enlistarseParaEnvio(Controlador* controlador); //Cuando el camion esta vacio
+        void pedirDescarga(Controlador* controlador); //Cuando el camion esta lleno
+        void realizarEnvio(Controlador* controlador);
 
     public:
         Camion();
