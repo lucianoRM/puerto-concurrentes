@@ -19,6 +19,9 @@ pid_t Process::start(Controlador* controlador) {
     pid_t pid = fork();
 
     if (pid == 0) {
+
+        this->log("He sido generado");
+
         pid = getpid();
 
         // event handler para la senial SIGINT (-2)
