@@ -400,18 +400,22 @@ pid_t Controlador::tomarTransporteVacio(int transporte) {
     if(transporte == BARCO) {
         //Debo leer del fifo de los barcos vacios
         int res = this->barcosVaciosLectura->leer(&pidTransporte,sizeof(pidTransporte));
-        if (res <= 0) {
+        if (res == 0) {
+            Logger::getInstance()->log("[GRUA] No hay barcos vacios");
+        } else if (res < 0) {
             std::string err = strerror(errno);
-            Logger::getInstance()->log("Error leyendo de barcos vacios" + err);
+            Logger::getInstance()->log("[GRUA] Error leyendo de barcos vacios" + err);
             EndProcessException e;
             throw e;
         }
     }else{
         //Logger::getInstance()->log("Grua,antes de leer camiones vacios",1);
         int res = this->camionesVaciosLectura->leer(&pidTransporte,sizeof(pidTransporte));
-        if (res <= 0) {
+        if (res == 0) {
+            Logger::getInstance()->log("[GRUA] No hay camiones vacios");
+        } else if (res < 0) {
             std::string err = strerror(errno);
-            Logger::getInstance()->log("Error leyendo de camiones vacios" + err);
+            Logger::getInstance()->log("[GRUA] Error leyendo de camiones vacios" + err);
             EndProcessException e;
             throw e;
         }
