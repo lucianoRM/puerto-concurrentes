@@ -99,6 +99,7 @@ int main(){
 
     delete controlador;
 
+    SignalHandler :: destruir ();
 
     Logger::getInstance()->log("Soy el master y termine");
 
