@@ -24,12 +24,13 @@ class SIGINT_Handler_main : public EventHandler {
 
 		virtual int handleSignal ( int signum ) {
 			assert ( signum == SIGINT );
-			Logger::getInstance()->log("ME LLEGO LA SEÑAL PARA MORIR");
+			Logger::getInstance()->log("[MAIN] Me llego SIGINT");
 			std::vector<pid_t>::iterator it = this->children.begin();
 			for (;it != this->children.end(); it++) {
 				pid_t pid = *it;
-				Logger::getInstance()->log("Soy el master y estoy terminando a [" + std::to_string(pid) + "]");
+				Logger::getInstance()->log("[MAIN] kill(" + std::to_string(pid) + ")");
 				kill(pid, SIGINT);
+				Logger::getInstance()->log("[MAIN] waitpid(" + std::to_string(pid) + ")");
 				waitpid(pid, NULL, 0);
 			}
 			return 0;

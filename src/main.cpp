@@ -20,7 +20,7 @@
     std::vector<pid_t>::iterator it = hijos.begin();
     for (;it != hijos.end(); it++) {
         pid_t pid = *it;
-        Logger::getInstance()->log("Soy el master y estoy esperando al [" + nombre + " : " + std::to_string(pid) + "]");
+        Logger::getInstance()->log("[MAIN] Estoy esperando al [" + nombre + " : " + std::to_string(pid) + "]");
         waitpid( pid, NULL, 0 );
     }
 }
@@ -29,14 +29,14 @@ void terminarHijos(std::string nombre, std::vector<pid_t> hijos) {
     std::vector<pid_t>::iterator it = hijos.begin();
     for (;it != hijos.end(); it++) {
         pid_t pid = *it;
-        Logger::getInstance()->log("Soy el master y estoy terminando a [" + nombre + " : " + std::to_string(pid) + "]");
+        Logger::getInstance()->log("[MAIN] Estoy terminando a [" + nombre + " : " + std::to_string(pid) + "]");
         kill(pid, SIGINT);
     }
 }
 
 int main(){
     Logger::getInstance()->log("\n\n\n*************NEW RUN*************");
-    Logger::getInstance()->log("Soy el master y estoy empezando la joda");
+    Logger::getInstance()->log("[MAIN] Estoy empezando la joda");
 
     //Valores por default
     int cantidadBarcos = C::barcos;
@@ -100,7 +100,7 @@ int main(){
 
     SignalHandler :: destruir ();
 
-    Logger::getInstance()->log("Soy el master y termine");
+    Logger::getInstance()->log("[MAIN] Termine");
 
     Logger::destroy();
 
