@@ -53,11 +53,6 @@ int main(){
     std::vector<pid_t> camiones;
 
     std::vector<pid_t> hijos;
-    // event handler para la senial SIGINT (-2)
-    SIGINT_Handler_main sigint_handler(hijos);
-
-    // se registra el event handler declarado antes
-    SignalHandler :: getInstance()->registrarHandler ( SIGINT,&sigint_handler );
 
     Controlador* controlador = new Controlador(cantidadAmarres);
     for(int i = 0;i < cantidadBarcos ;i++) {
@@ -87,12 +82,15 @@ int main(){
     hijos.insert(hijos.end(), gruas.begin(), gruas.end());
     hijos.insert(hijos.end(), camiones.begin(), camiones.end());
 
+    // event handler para la senial SIGINT (-2)
+    SIGINT_Handler_main sigint_handler(hijos);
+
+    // se registra el event handler declarado antes
+    SignalHandler :: getInstance()->registrarHandler ( SIGINT,&sigint_handler );
 
     esperarHijos("BARCO", barcos);
 
     esperarHijos("CAMION", camiones);
-
-    terminarHijos("GRUA", gruas);
 
     esperarHijos("GRUA", gruas);
 
@@ -103,7 +101,6 @@ int main(){
     SignalHandler :: destruir ();
 
     Logger::getInstance()->log("Soy el master y termine");
-
 
     Logger::destroy();
 

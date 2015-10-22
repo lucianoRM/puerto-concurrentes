@@ -30,6 +30,7 @@ class SIGINT_Handler_main : public EventHandler {
 				pid_t pid = *it;
 				Logger::getInstance()->log("Soy el master y estoy terminando a [" + std::to_string(pid) + "]");
 				kill(pid, SIGINT);
+				waitpid(pid, NULL, 0);
 			}
 			return 0;
 		}
