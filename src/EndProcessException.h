@@ -10,7 +10,7 @@
 
 class EndProcessException: public std::exception {
     virtual const char* what() const throw() {
-        return "El processo debe terminar ahora";
+        return ("["+std::to_string(getpid()) +"] El processo debe terminar ahora").c_str();
     }
 };
 #endif //CONCU_ENDPROCESSEXCEPTION_H

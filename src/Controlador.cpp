@@ -344,9 +344,11 @@ struct trabajo Controlador::asignarTrabajoAGrua(){
         throw e;
     }
 
+    Logger::getInstance()->log("[GRUA] Estoy leyendo del fifo de tareas");
+
     struct trabajo trabajo;
     res = this->tareasAGruaLectura->leer(&trabajo,sizeof(trabajo));
-    if (res < 0) {
+    if (res <= 0) {
         std::string err = strerror(errno);
         Logger::getInstance()->log("Error leyendo de tareas grua " + err);
         EndProcessException e;

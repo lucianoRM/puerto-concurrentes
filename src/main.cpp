@@ -94,6 +94,7 @@ int main(){
 
     terminarHijos("GRUA", gruas);
 
+    esperarHijos("GRUA", gruas);
 
     controlador->destruir();
 
