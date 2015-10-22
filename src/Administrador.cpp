@@ -15,7 +15,6 @@ void Administrador::initialize(Controlador *controlador) { }
 
 void Administrador::run(Controlador *c) {
 
-    Logger::getInstance()->log("[ADMIN] Iniciado");
     std::ostringstream ss;
     ss << c->valorCaja();
     std::string s = ss.str();
