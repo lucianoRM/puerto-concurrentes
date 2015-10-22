@@ -75,7 +75,6 @@ int main(){
         camiones.push_back(pid);
     }
 
-    std::cout << C::logTime << std::endl;
     Administrador admin(C::logTime);
     pid_t pid = admin.start(controlador);
     if (getpid()==pid) return 0;

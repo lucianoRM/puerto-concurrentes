@@ -346,14 +346,7 @@ struct trabajo Controlador::asignarTrabajoAGrua(){
         EndProcessException e;
         throw e;
     }
-    //Luego de leer el trabajo hay que liberar el lock para que otras gruas puedan leer.
-    res = this->lecturaTrabajosAGruas->liberarLock();
-    if (res < 0) {
-        std::string err = strerror(errno);
-        Logger::getInstance()->log("Error liberando el lock de lectura trabajos de grua " + err);
-        EndProcessException e;
-        throw e;
-    }
+
 
     return trabajo;
 
@@ -419,6 +412,16 @@ pid_t Controlador::tomarTransporteVacio(int transporte) {
         }
         //Logger::getInstance()->log("Grua,despues de leer camiones vacios",1);
     }
+
+    //Luego de leer el trabajo hay que liberar el lock para que otras gruas puedan leer.
+    int res = this->lecturaTrabajosAGruas->liberarLock();
+    if (res < 0) {
+        std::string err = strerror(errno);
+        Logger::getInstance()->log("Error liberando el lock de lectura trabajos de grua " + err);
+        EndProcessException e;
+        throw e;
+    }
+
 
     return pidTransporte;
 }
