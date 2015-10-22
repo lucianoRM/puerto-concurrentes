@@ -17,6 +17,7 @@ public:
 	static unsigned int barcos;
 	static unsigned int lugares;
 	static unsigned int gruas;
+	static float logTime;
 private:
 	static json conf;
 };

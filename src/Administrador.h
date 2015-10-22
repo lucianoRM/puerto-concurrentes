@@ -10,6 +10,11 @@
 #include "MemoriaCompartida2.h"
 
 class Administrador : public Process {
+private:
+    float logTime;
+public:
+    Administrador(float logTime);
+    void initialize(Controlador* controlador);
     void run(Controlador* controlador);
 };
 

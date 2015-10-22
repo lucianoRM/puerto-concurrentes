@@ -76,8 +76,12 @@ int main(){
         camiones.push_back(pid);
     }
 
-    //Administrador admin;
-    //admin.start(controlador);
+    std::cout << C::logTime << std::endl;
+    Administrador admin(C::logTime);
+    pid_t pid = admin.start(controlador);
+    if (getpid()==pid) return 0;
+
+
     hijos.insert(hijos.end(), barcos.begin(), barcos.end());
     hijos.insert(hijos.end(), gruas.begin(), gruas.end());
     hijos.insert(hijos.end(), camiones.begin(), camiones.end());

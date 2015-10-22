@@ -18,3 +18,4 @@ unsigned int C::barcos = (unsigned int) C::conf["barcos"];
 unsigned int C::camiones = (unsigned int) C::conf["camiones"];
 unsigned int C::gruas = (unsigned int) C::conf["gruas"];
 unsigned int C::lugares = (unsigned int) C::conf["lugares"];
+float C::logTime = (float) C::conf["logTime"];
