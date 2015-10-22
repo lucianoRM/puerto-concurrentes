@@ -13,7 +13,6 @@
 #include "Camion.h"
 #include "Grua.h"
 #include "Administrador.h"
-#include "Main.h"
 #include "SIGINT_Handler_main.h"
 
     void esperarHijos(std::string nombre, std::vector<pid_t> hijos) {
@@ -110,14 +109,3 @@ int main(){
 
     return 0;
 }
-
-/*int main2() {
-    Logger::getInstance()->log("\n\n\n*************NEW RUN*************");
-    Logger::getInstance()->log("Soy el master y estoy empezando la joda");
-
-    Main main;
-
-    main.start(NULL);
-    return 0;
-}
-*/
