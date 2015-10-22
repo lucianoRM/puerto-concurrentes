@@ -63,18 +63,21 @@ int main(){
     for(int i = 0;i < cantidadBarcos ;i++) {
         Barco barco;
         pid_t pid = barco.start(controlador);
+        if (getpid()==pid) return 0;
         barcos.push_back(pid);
     }
 
     for(int i=0;i < cantidadGruas; i++){
         Grua grua;
         pid_t pid = grua.start(controlador);
+        if (getpid()==pid) return 0;
         gruas.push_back(pid);
     }
 
     for(int i=0;i < cantidadCamiones; i++){
         Camion camion;
         pid_t pid = camion.start(controlador);
+        if (getpid()==pid) return 0;
         camiones.push_back(pid);
     }
 

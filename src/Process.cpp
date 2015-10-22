@@ -4,9 +4,7 @@
 
 #include "Process.h"
 
-Process::Process(std::string n):shouldRun(true) {
-    this->name = n;
-}
+Process::Process(std::string n):name(n),shouldRun(true) { }
 
 void Process::destroy(Controlador *controlador) {
 
@@ -59,11 +57,10 @@ pid_t Process::start(Controlador* controlador) {
         delete controlador;
         Logger::destroy();
 
-        exit ( 0 );
+        //exit ( 0 );
     }
     return pid;
 }
 
 Process::~Process() {
-
 }
