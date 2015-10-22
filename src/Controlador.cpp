@@ -133,8 +133,6 @@ void Controlador::destruir(){
 
 
     //Locks
-    unlink(lockLecturaCargasABarcosFile);
-    unlink(lockLecturaCargasACamionesFile);
     unlink(lockLecturaTrabajosAGruasFile);
     unlink(lockEntradaFile);
     unlink(lockSalidaFile);
