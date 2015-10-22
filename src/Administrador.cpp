@@ -20,6 +20,6 @@ void Administrador::run(Controlador *c) {
     ss << c->valorCaja();
     std::string s = ss.str();
     Logger::getInstance()->log("[ADMIN] Valor de la caja: " + s);
-    sleep(0.000001);
+    usleep(logTime);
 
 }

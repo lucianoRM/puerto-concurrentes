@@ -21,8 +21,6 @@
 #include "EndProcessException.h"
 
 static const char* const semaforoAmarresFile = "/tmp/semaforoAmarres.tmp";
-static const char* const lockLecturaCargasABarcosFile = "/tmp/lockLecturaCargasABarcos.tmp";
-static const char* const lockLecturaCargasACamionesFile = "/tmp/lockLecturaCargasACamiones.tmp";
 static const char* const lockLecturaTrabajosAGruasFile = "/tmp/lockLecturaTrabajosAGruas.tmp";
 static const char* const lockEntradaFile = "/tmp/lockEntrada.tmp";
 static const char* const lockSalidaFile = "/tmp/lockSalida.tmp";
@@ -56,8 +54,6 @@ class Controlador {
 
         LockFile* entrada;
         LockFile* salida;
-        LockFile* lecturaCargasABarcos;
-        LockFile* lecturaCargasACamiones;
         LockFile* lecturaTrabajosAGruas;
 
         FifoLectura* tareasAGruaLectura;

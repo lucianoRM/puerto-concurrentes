@@ -13,8 +13,6 @@ Controlador::Controlador(int cantidadAmarres) {
     result+=mknod(semaforoAmarresFile,S_IFREG|0777,0);
 
     //Locks
-    result+=mknod(lockLecturaCargasABarcosFile,S_IFREG|0777,0);
-    result+=mknod(lockLecturaCargasACamionesFile,S_IFREG|0777,0);
     result+=mknod(lockLecturaTrabajosAGruasFile,S_IFREG|0777,0);
     result+=mknod(lockEntradaFile,S_IFREG|0777,0);
     result+=mknod(lockSalidaFile,S_IFREG|0777,0);
@@ -23,8 +21,6 @@ Controlador::Controlador(int cantidadAmarres) {
 
     this->semaforoAmarres = new Semaforo(semaforoAmarresFile,cantidadAmarres);
 
-    this->lecturaCargasABarcos = new LockFile(lockLecturaCargasABarcosFile);
-    this->lecturaCargasACamiones = new LockFile(lockLecturaCargasACamionesFile);
     this->lecturaTrabajosAGruas = new LockFile(lockLecturaTrabajosAGruasFile);
     this->entrada = new LockFile(lockEntradaFile);
     this->salida = new LockFile(lockSalidaFile);
@@ -58,8 +54,6 @@ Controlador::~Controlador() {
     delete this->entrada;
     delete this->salida;
 
-    delete this->lecturaCargasABarcos;
-    delete this->lecturaCargasACamiones;
     delete this->lecturaTrabajosAGruas;
 
     delete this->tareasAGruaLectura;
