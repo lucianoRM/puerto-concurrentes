@@ -1,0 +1,141 @@
+process::grua {
+	while(deboSeguirTrabajando) {
+		obtenerLock(),
+		trabajo = leerTrabajoColaTrabajos();
+		liberarLock();
+		if (trabajo.tipo == "descargarCamion") {
+			writeColaCamionesVacios(trabajo.carga);	
+		} else if (trabajo.tipo == "descargarBarco") {
+			writeColaBarcosVacios(trabajo.carga);	
+		}
+	}
+}
+
+process::barco {
+	amarrar();	
+	encolarTrabajoEnColaTrabajos(trabajo);
+	carga = leerColaBarcosVacios()
+	desamarrar();
+}
+
+process::camion {
+	carga = leerColaCamionesVacios()
+	trabajo = simularEntrega(carga);//si vuelve o no con trabajo nuevo no sabemos	
+	if(trabajo) {	
+		encolarTrabajoEnColaTrabajos(trabajo);
+		carga = leerColaCamionesVacios()	
+	}
+}
+
+
+#ifndef CONTROLADOR_H_
+#define CONTROLADOR_H_
+
+Class Controlador{
+		//Es una abstraccion de todos los metodos de sincronizacion.
+		private:
+			int lockEntrada; //Regula el paso de los barcos para que entren de a uno al puerto.
+			int semaforoAmarres; // Se inicializa con la cantidad de amarres que tiene el puerto.
+			int semaforoGruas; // Se inicializa con la cantidad de amarres
+			int semaforoCamiones; // idem
+			int pipe barco-grua;// para comunicar el pid de los barcos a las gruas
+			int pipe grua-camion; //para comunicar el pid de los barcos a los camiones
+			int lock lectura;  //(lock de escritura) para leer sobre el pipe barco-grua.
+
+		public:
+
+			void cederAmarre(){
+				semaforoAmarres.p();
+			}
+			int dejarPasarBarco(){
+				//Devuelve el lock para la entrada. Sino se queda esperando hasta que pueda pedirlo
+				entrada.getLock();
+			}
+			int notificarAmarre() {
+				//Libera el lock de la entrada
+				entrada.releaseLock();
+			}
+			int liberarGrua(){
+				semaforoGruas.v();
+			}
+			int cederTrabajoAGrua(){
+				semaforoGruas.p();
+			}
+			int unirBarcoGrua(){
+				pipeBarcoGrua.getLock();
+				barco_pid = read pipeBarcoGrua();
+				pipeBarcoGRua.releaseLock();
+				return barco_pid;
+			}
+
+};
+
+
+
+
+//Proceso Barco
+
+Class Barco{
+		private:
+			int controlador;
+			int lockEntrada; //Para poder pasar de a uno al puerto
+		public:
+			void getLockEntrada(){
+				//
+		}
+			void amarrar(){
+				//obtiene el lock de entrada.Si alguien mas lo tiene, se bloquea hasta que se libere.
+				// Una vez obtenido, escribe en memoria compartida sus datos(carga) y escribe en el pipe barco-grua su pid. Luego libera una grua y espera a irse.
+				controlador->cederAmarre();
+				this->getLockEntrada();
+				this->writeMemoriaCompartida(carga);
+				controlador->writePipeBarcoGrua(pid); //No necesitamos lockeo sobre la escritura del pipe porque si es menor que PIPE_BUF esta garantizada en ser atomica. Si muchos procesos escriben al mismo tiempo sobre el pipe,los datos estaran en orden y no se mezaclaran
+				controlador->liberarGrua();
+				controlador->releaseLockEntrada();
+				controlador->permitirSalir(); //Se queda esperando hasta que el cntrolador habilite que pueda salir del puerto.
+
+
+			}
+
+
+
+};
+
+
+//Proceso Grua
+
+
+Class Grua{
+		private:
+			int controlador;
+
+
+		public:
+			int esperarTrabajo(){
+				controlador->cederTrabajoGrua();
+				barco_pid = controlador->unirBarcoGrua();
+				carga = memoriaCompartid.read(barcoPid); //no requiere cntrol de concurrencia porque si se llega a esta etapa es porque la memoria ya fue escrita.
+
+
+
+			}
+
+
+};
+
+//Proceso Camion
+
+PARA ENTRAR:
+
+
+
+
+-Proceso Grua
+-Proceso Camion
+
+
+Entrar al puerto:
+
+
+
+

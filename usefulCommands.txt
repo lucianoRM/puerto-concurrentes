@@ -1,0 +1,8 @@
+Comandos Utiles a la hora de debuggear:
+
+-ps : Lista todos los procesos activos
+-fuser <filepath> : Lista todos los procesos que tienen abierto ese archivo(Puede servir para checkear locks).
+-ipcs : Lista semaforos,sectores de memorias compartidas y colas abiertas
+-ipcrm [-s -m ...] : Elimina del ipcs segun id.
+-for i in $(ipcs -s | grep martin | awk '{print $2}'); do ipcrm sem $i; done :REMOVE ALL SEMAPHORES
+- ps -fea | grep concu: mata todo proceso relacionado al tp
